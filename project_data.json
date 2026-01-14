@@ -1,0 +1,99 @@
+{
+  "general": {
+    "nombre": "Santino Gimenez",
+    "profesion": "Tu dueño real",
+    "descripcion": "en un mundo dematices insanas nace el futuro del empleo online basado en una escalabilidad y un mundo cerrado aislado de la industria moderna, no competencia, pero a su lado.",
+    "color_gradient": "personalizado",
+    "fondo_animado": true,
+    "logo_path": "C:/Users/Gizan/Downloads/gato gamer.jpg",
+    "red_contacto": "TikTok",
+    "url_contacto": "mira tiktopkevfs.tiktok",
+    "redes_sociales": {
+      "youtube": "",
+      "twitter": "",
+      "facebook": "",
+      "instagram": "",
+      "whatsapp": "",
+      "linkedin": "",
+      "tiktok": "",
+      "discord": "",
+      "correo": ""
+    },
+    "video_destacado": "",
+    "colores_personalizados": {
+      "primario": "#ff0004",
+      "secundario": "#7818ff",
+      "terciario": "#0000ff"
+    }
+  },
+  "videos": [],
+  "shorts": [],
+  "canales": [],
+  "reseñas": [],
+  "botones": {
+    "contacto": {
+      "tipo": "gradiente",
+      "color": ""
+    },
+    "portfolio": {
+      "tipo": "color",
+      "color": "#0000ff"
+    },
+    "contacto_grande": {
+      "tipo": "gradiente",
+      "color": ""
+    }
+  },
+  "features": [
+    {
+      "icono": "fas fa-crown",
+      "titulo": "EDICIÓN PREMIUM",
+      "texto": "Cada video es tratado con el máximo cuidado y atención a los detalles para garantizar resultados excepcionales."
+    },
+    {
+      "icono": "fas fa-bolt",
+      "titulo": "ENTREGA RÁPIDA",
+      "texto": "Optimizo mi flujo de trabajo para ofrecer resultados de alta calidad en plazos ajustados sin comprometer la excelencia."
+    },
+    {
+      "icono": "fas fa-video",
+      "titulo": "EFECTOS VISUALES",
+      "texto": "Incorporo efectos y transiciones innovadoras que mejoran la narrativa visual de cada proyecto."
+    },
+    {
+      "icono": "fas fa-headphones",
+      "titulo": "AUDIO PROFESIONAL",
+      "texto": "Diseño y optimizo pistas de audio para crear una experiencia inmersiva y de alta fidelidad."
+    }
+  ],
+  "fondos_imagen": {
+    "hero": {
+      "usar_imagen": false,
+      "ruta": ""
+    },
+    "features": {
+      "usar_imagen": false,
+      "ruta": ""
+    },
+    "portfolio": {
+      "usar_imagen": false,
+      "ruta": ""
+    },
+    "shorts": {
+      "usar_imagen": false,
+      "ruta": ""
+    },
+    "channels": {
+      "usar_imagen": false,
+      "ruta": ""
+    },
+    "reviews": {
+      "usar_imagen": false,
+      "ruta": ""
+    },
+    "contact": {
+      "usar_imagen": false,
+      "ruta": ""
+    }
+  }
+}
