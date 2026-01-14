@@ -1,0 +1,64 @@
+{
+  "general": {
+    "nombre": "QTWATGWEGW",
+    "profesion": "GW4TGWTG",
+    "descripcion": "W4EGWGWG",
+    "color_gradient": "azul",
+    "fondo_animado": true,
+    "logo_path": "",
+    "red_contacto": "TikTok",
+    "url_contacto": "B SF F  FSDVVDV.TIKTOK",
+    "redes_sociales": {
+      "youtube": "",
+      "twitter": "",
+      "facebook": "",
+      "instagram": "",
+      "whatsapp": "",
+      "linkedin": "",
+      "tiktok": "",
+      "discord": "",
+      "correo": ""
+    },
+    "video_destacado": ""
+  },
+  "videos": [],
+  "shorts": [],
+  "canales": [],
+  "reseñas": [],
+  "botones": {
+    "contacto": {
+      "tipo": "gradiente",
+      "color": ""
+    },
+    "portfolio": {
+      "tipo": "gradiente",
+      "color": ""
+    },
+    "contacto_grande": {
+      "tipo": "gradiente",
+      "color": ""
+    }
+  },
+  "features": [
+    {
+      "icono": "fas fa-crown",
+      "titulo": "EDICIÓN PREMIUM",
+      "texto": "Cada video es tratado con el máximo cuidado y atención a los detalles para garantizar resultados excepcionales."
+    },
+    {
+      "icono": "fas fa-bolt",
+      "titulo": "ENTREGA RÁPIDA",
+      "texto": "Optimizo mi flujo de trabajo para ofrecer resultados de alta calidad en plazos ajustados sin comprometer la excelencia."
+    },
+    {
+      "icono": "fas fa-video",
+      "titulo": "EFECTOS VISUALES",
+      "texto": "Incorporo efectos y transiciones innovadoras que mejoran la narrativa visual de cada proyecto."
+    },
+    {
+      "icono": "fas fa-headphones",
+      "titulo": "AUDIO PROFESIONAL",
+      "texto": "Diseño y optimizo pistas de audio para crear una experiencia inmersiva y de alta fidelidad."
+    }
+  ]
+}
