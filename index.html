@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLYMPUS · Galaxia Corporativa</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <!-- PANEL LATERAL IZQUIERDO -->
+    <div class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-text">OLYMPUS</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <div class="sidebar-section">
+                <h3><i class="fas fa-sitemap"></i> Sistema Corporativo</h3>
+                <div id="hierarchyContainer" class="hierarchy">
+                    <!-- Se genera dinámicamente desde script.js -->
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h3><i class="fas fa-eye"></i> Compañías visibles</h3>
+                <div id="groupFilters" class="group-filters"></div>
+            </div>
+            <div class="sidebar-section">
+                <h3><i class="fas fa-search"></i> Exploración</h3>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Buscar entidad...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="stats">
+                <div class="stat"><span class="stat-label">Entidades</span><span id="nodeCount" class="stat-value">0</span></div>
+                <div class="stat"><span class="stat-label">Conexiones</span><span id="linkCount" class="stat-value">0</span></div>
+            </div>
+            <div class="stats" style="margin-top: 12px; border-top: 1px solid #1e2a44; padding-top: 8px;">
+                <div class="stat"><span class="stat-label">Compañías</span><span id="companyCount" class="stat-value">0</span></div>
+                <div class="stat"><span class="stat-label">Empresas</span><span id="empresaTotalCount" class="stat-value">0</span></div>
+                <div class="stat"><span class="stat-label">Departamentos</span><span id="departmentCount" class="stat-value">0</span></div>
+            </div>
+            <div class="stats" style="margin-top: 12px; border-top: 1px solid #1e2a44; padding-top: 8px;">
+                <div class="stat"><span class="stat-label">Total empleados</span><span id="totalEmployees" class="stat-value">0</span></div>
+            </div>
+        </div>
+    </div>
+    <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Ocultar panel"><i class="fas fa-chevron-left"></i></button>
+    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Mostrar panel"><i class="fas fa-chevron-right"></i></button>
+    <div class="main-container">
+        <div class="floating-controls">
+            <button class="nav-btn" id="centerBtn" title="Centrar en núcleo"><i class="fas fa-sun"></i></button>
+            <div class="nav-separator"></div>
+            <button class="nav-btn" id="zoomInBtn" title="Acercar"><i class="fas fa-plus"></i></button>
+            <button class="nav-btn" id="zoomOutBtn" title="Alejar"><i class="fas fa-minus"></i></button>
+            <button class="nav-btn" id="resetViewBtn" title="Vista completa"><i class="fas fa-expand"></i></button>
+        </div>
+        <div id="graphContainer" class="graph-container">
+            <svg id="galaxySvg"></svg>
+        </div>
+    </div>
+    <div id="nodeTooltip" class="node-tooltip"></div>
+    <script src="script.js"></script>
+</body>
+</html>
