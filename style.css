@@ -451,6 +451,7 @@ body.immersion-mode .sidebar:not(.collapsed) ~ .sidebar-collapse-btn {
 .node-label.compania { font-size: 16px; font-weight: 700; }
 .node-label.empresa { font-size: 14px; font-weight: 600; }
 .node-label.subEmpresa { font-size: 12px; font-weight: 600; fill: #ffeeaa; }
+.node-label.aplicacion { font-size: 12px; font-weight: 600; fill: #f78b2e; } /* Naranja para apps */
 .node-label.departamento { font-size: 11px; font-weight: 500; fill: #ccddff; }
 
 /* ========== ENLACES ========== */
