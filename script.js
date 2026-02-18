@@ -1,18 +1,16 @@
 // ============================================================
-// OLYMPUS · GALAXIA CORPORATIVA - ESTRUCTURA EXACTA (MODIFICADA)
+// OLYMPUS · GALAXIA CORPORATIVA - ESTRUCTURA MODIFICADA
 // ============================================================
-// ✅ 5 compañías con la jerarquía especificada
-// ✅ Empresas pueden tener departamentos directos y sub‑empresas
-// ✅ Colores únicos por nivel (empresa, subEmpresa, departamento)
-// ✅ Empleados: 
-//    - Avalon (Creators y Studios): 20–40 por departamento (excepto dos específicos)
-//    - Atención al Cliente (Avalon Creators): 4
-//    - Legal (Avalon Creators): 2
-//    - Olympus Culture y Olympus Strategy: 3–8 por departamento
-//    - Resto de departamentos: 0 empleados
-// ✅ Solo un enlace de servicio: Helios AI → Olympus Mindset
-// ✅ Tercera sub‑empresa en Avalon Studios: AVALON ANIMATION
-// ✅ CELESTIAL GAMES con 3 sub‑empresas (3D, 2D, VR/4D)
+// ✅ Cambios realizados:
+//    - Eliminada compañía AVALON
+//    - Creada OLYMPUS REGALIS con Olympus Atelier (e‑commerce de moda)
+//    - Olympus Interactive: renombrado Celestial Games → Olympus Games,
+//      sub‑empresas a Olympus 2D, 3D, VR (cada una con 3 departamentos)
+//    - Olympus Labs renombrado a OLYMPUS SOCIETY
+//    - Vision Olympus eliminada como compañía y sus empresas (Academy,
+//      Culture, Strategy) pasan a ser empresas de OLYMPUS SOCIETY
+//    - Empleados: solo los departamentos de las antiguas Vision y los
+//      nuevos de Olympus Atelier tienen 3‑8 empleados; el resto 0.
 // ============================================================
 
 // ==================== CONFIGURACIÓN GLOBAL ====================
@@ -30,11 +28,10 @@ const CONFIG = {
 
     colors: {
         nucleo: '#ffd166',
-        compania1: '#4d7cfe',   // AVALON
-        compania2: '#06d6a0',   // OLYMPUS LABS
+        compania1: '#4d7cfe',   // OLYMPUS REGALIS
+        compania2: '#06d6a0',   // OLYMPUS SOCIETY
         compania3: '#ef476f',   // OLYMPUS TECHNOLOGY
         compania4: '#ff9e00',   // OLYMPUS INTERACTIVE
-        compania5: '#9d4edd',   // VISION OLYMPUS
     },
 
     // Colores distintos para cada nivel (ya no heredan de la compañía)
@@ -65,7 +62,7 @@ const DATA = {
     groupVisibility: {}
 };
 
-// ==================== NUEVA ESTRUCTURA JERÁRQUICA (EXACTA) ====================
+// ==================== NUEVA ESTRUCTURA JERÁRQUICA ====================
 const OLYMPUS_STRUCTURE = {
     nucleo: {
         id: 'nucleo',
@@ -74,150 +71,12 @@ const OLYMPUS_STRUCTURE = {
         type: 'nucleo',
         color: CONFIG.colors.nucleo,
         mision: 'Unificar el progreso humano a través de tecnología, creatividad y conocimiento.',
-        companias: []   // Se llenará más adelante con las compañías
+        companias: []   // Se llenará con las compañías
     },
     companias: []
 };
 
-// ----- 1. AVALON (Medios y producción audiovisual) -----
-OLYMPUS_STRUCTURE.companias.push({
-    id: 'avalon',
-    name: 'AVALON',
-    description: 'Área de medios y producción audiovisual.',
-    type: 'compania',
-    color: CONFIG.colors.compania1,
-    mision: 'Narrar las historias que definirán el mañana.',
-    empresas: [
-        // 1.1 Avalon Creators (departamentos directos)
-        {
-            id: 'avalon-creators',
-            name: 'AVALON CREATORS',
-            desc: 'Agencia que presta servicios a creadores externos.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'avalon-creators-edicion', name: 'Departamento de Editores', desc: 'Edición de video, optimización de retención, adaptación a plataformas.', type: 'departamento' },
-                { id: 'avalon-creators-legal', name: 'Departamento Legal', desc: 'Contratos, derechos de autor, acuerdos comerciales.', type: 'departamento' },
-                { id: 'avalon-creators-atencion', name: 'Departamento de Atención al Cliente', desc: 'Gestión diaria con clientes, seguimiento de proyectos.', type: 'departamento' }
-            ]
-        },
-        // 1.2 Avalon Studios (con sub‑empresas)
-        {
-            id: 'avalon-studios',
-            name: 'AVALON STUDIOS',
-            desc: 'Productora de propiedad intelectual propia.',
-            type: 'empresa',
-            subEmpresas: [
-                // Avalon Series
-                {
-                    id: 'avalon-series',
-                    name: 'AVALON SERIES',
-                    desc: 'Producción de series originales.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'series-edicion', name: 'Departamento de Edición', desc: 'Montaje, postproducción, corrección de color, sonido.', type: 'departamento' },
-                        { id: 'series-creativo', name: 'Departamento Creativo', desc: 'Guion, desarrollo de historias y universos narrativos.', type: 'departamento' },
-                        { id: 'series-produccion', name: 'Departamento de Producción', desc: 'Rodaje, logística, coordinación técnica.', type: 'departamento' }
-                    ]
-                },
-                // Avalon Movies
-                {
-                    id: 'avalon-movies',
-                    name: 'AVALON MOVIES',
-                    desc: 'Producción de películas originales.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'movies-edicion', name: 'Departamento de Edición', desc: 'Postproducción cinematográfica.', type: 'departamento' },
-                        { id: 'movies-creativo', name: 'Departamento Creativo', desc: 'Desarrollo de largometrajes y narrativa.', type: 'departamento' },
-                        { id: 'movies-produccion', name: 'Departamento de Producción', desc: 'Filmación y ejecución operativa.', type: 'departamento' }
-                    ]
-                },
-                // AVALON ANIMATION
-                {
-                    id: 'avalon-animation',
-                    name: 'AVALON ANIMATION',
-                    desc: 'Producción de series y películas de animación, con enfoque en anime.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'animation-2d', name: 'Departamento de Animación 2D', desc: 'Animación tradicional/digital, layout, keyframes.', type: 'departamento' },
-                        { id: 'animation-3d', name: 'Departamento de Animación 3D', desc: 'Modelado, rigging, animación CGI.', type: 'departamento' },
-                        { id: 'animation-art', name: 'Departamento de Dirección de Arte', desc: 'Estilo visual, fondos, color, concept art.', type: 'departamento' }
-                    ]
-                }
-            ]
-        }
-    ]
-});
-
-// ----- 2. OLYMPUS LABS (Desarrollo de aplicaciones digitales) -----
-OLYMPUS_STRUCTURE.companias.push({
-    id: 'olympus-labs',
-    name: 'OLYMPUS LABS',
-    description: 'Desarrollo de aplicaciones digitales escalables.',
-    type: 'compania',
-    color: CONFIG.colors.compania2,
-    mision: 'Empoderar a las personas con herramientas digitales transformadoras.',
-    empresas: [
-        {
-            id: 'olympus-mindset',
-            name: 'OLYMPUS MINDSET',
-            desc: 'Unidad que gestiona apps de desarrollo personal y rendimiento.',
-            type: 'empresa',
-            // Departamento directo
-            departamentos: [
-                { id: 'mindset-legal', name: 'Departamento Legal', desc: 'Protección de datos, cumplimiento normativo digital, términos y condiciones.', type: 'departamento' }
-            ],
-            // Sub‑empresas (aplicaciones)
-            subEmpresas: [
-                {
-                    id: 'empyria',
-                    name: 'EMPYRIA',
-                    desc: 'Gestión del tiempo y rutinas.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'empyria-prog', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento técnico.', type: 'departamento' },
-                        { id: 'empyria-producto', name: 'Departamento de Producto & Creativo', desc: 'UX/UI, diseño funcional y experiencia.', type: 'departamento' },
-                        { id: 'empyria-ops', name: 'Departamento de Operaciones', desc: 'Actualizaciones, métricas y soporte.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'noema',
-                    name: 'NOEMA',
-                    desc: 'Entrenamiento mental y cognitivo.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'noema-prog', name: 'Departamento de Programación', desc: 'Desarrollo técnico y algoritmos.', type: 'departamento' },
-                        { id: 'noema-producto', name: 'Departamento de Producto & Creativo', desc: 'Diseño de ejercicios y experiencia.', type: 'departamento' },
-                        { id: 'noema-ops', name: 'Departamento de Operaciones', desc: 'Optimización basada en datos.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'vitalion',
-                    name: 'VITALION',
-                    desc: 'Entrenamiento físico y nutrición.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'vitalion-prog', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento.', type: 'departamento' },
-                        { id: 'vitalion-producto', name: 'Departamento de Producto & Creativo', desc: 'Diseño de rutinas y experiencia.', type: 'departamento' },
-                        { id: 'vitalion-ops', name: 'Departamento de Operaciones', desc: 'Soporte y métricas.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'ecomyse',
-                    name: 'ECOMYSE',
-                    desc: 'Finanzas personales.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'ecomyse-prog', name: 'Departamento de Programación', desc: 'Desarrollo de funcionalidades.', type: 'departamento' },
-                        { id: 'ecomyse-producto', name: 'Departamento de Producto & Creativo', desc: 'UX/UI financiero.', type: 'departamento' },
-                        { id: 'ecomyse-ops', name: 'Departamento de Operaciones', desc: 'Gestión de datos.', type: 'departamento' }
-                    ]
-                }
-            ]
-        }
-    ]
-});
-
-// ----- 3. OLYMPUS TECHNOLOGY (Innovación tecnológica avanzada) -----
+// ----- 1. OLYMPUS TECHNOLOGY (Innovación tecnológica avanzada) -----
 OLYMPUS_STRUCTURE.companias.push({
     id: 'olympus-technology',
     name: 'OLYMPUS TECHNOLOGY',
@@ -270,7 +129,7 @@ OLYMPUS_STRUCTURE.companias.push({
     ]
 });
 
-// ----- 4. OLYMPUS INTERACTIVE (Videojuegos y experiencias digitales) -----
+// ----- 2. OLYMPUS INTERACTIVE (Videojuegos y experiencias digitales) -----
 OLYMPUS_STRUCTURE.companias.push({
     id: 'olympus-interactive',
     name: 'OLYMPUS INTERACTIVE',
@@ -280,42 +139,42 @@ OLYMPUS_STRUCTURE.companias.push({
     mision: 'Construir los mundos digitales del mañana.',
     empresas: [
         {
-            id: 'celestial-games',
-            name: 'CELESTIAL GAMES',
+            id: 'olympus-games',            // antes celestial-games
+            name: 'OLYMPUS GAMES',
             desc: 'Desarrollo y publicación de videojuegos.',
             type: 'empresa',
             subEmpresas: [
                 {
-                    id: 'celestial-3d',
-                    name: 'CELESTIAL 3D',
+                    id: 'olympus-3d',        // antes celestial-3d
+                    name: 'OLYMPUS 3D',
                     desc: 'Desarrollo de juegos en 3D.',
                     type: 'subEmpresa',
                     departamentos: [
-                        { id: 'celestial-3d-modelado', name: 'Departamento de Modelado 3D', desc: 'Creación de modelos y entornos 3D.', type: 'departamento' },
-                        { id: 'celestial-3d-animacion', name: 'Departamento de Animación 3D', desc: 'Animación de personajes y objetos.', type: 'departamento' },
-                        { id: 'celestial-3d-programacion', name: 'Departamento de Programación 3D', desc: 'Desarrollo de mecánicas y gráficos.', type: 'departamento' }
+                        { id: 'olympus-3d-modelado', name: 'Departamento de Modelado 3D', desc: 'Creación de modelos y entornos 3D.', type: 'departamento' },
+                        { id: 'olympus-3d-animacion', name: 'Departamento de Animación 3D', desc: 'Animación de personajes y objetos.', type: 'departamento' },
+                        { id: 'olympus-3d-programacion', name: 'Departamento de Programación 3D', desc: 'Desarrollo de mecánicas y gráficos.', type: 'departamento' }
                     ]
                 },
                 {
-                    id: 'celestial-2d',
-                    name: 'CELESTIAL 2D',
+                    id: 'olympus-2d',        // antes celestial-2d
+                    name: 'OLYMPUS 2D',
                     desc: 'Desarrollo de juegos en 2D.',
                     type: 'subEmpresa',
                     departamentos: [
-                        { id: 'celestial-2d-arte', name: 'Departamento de Arte 2D', desc: 'Ilustración y diseño de sprites.', type: 'departamento' },
-                        { id: 'celestial-2d-animacion', name: 'Departamento de Animación 2D', desc: 'Animación de personajes y escenarios.', type: 'departamento' },
-                        { id: 'celestial-2d-programacion', name: 'Departamento de Programación 2D', desc: 'Desarrollo de lógica y motores 2D.', type: 'departamento' }
+                        { id: 'olympus-2d-arte', name: 'Departamento de Arte 2D', desc: 'Ilustración y diseño de sprites.', type: 'departamento' },
+                        { id: 'olympus-2d-animacion', name: 'Departamento de Animación 2D', desc: 'Animación de personajes y escenarios.', type: 'departamento' },
+                        { id: 'olympus-2d-programacion', name: 'Departamento de Programación 2D', desc: 'Desarrollo de lógica y motores 2D.', type: 'departamento' }
                     ]
                 },
                 {
-                    id: 'celestial-vr',
-                    name: 'CELESTIAL VR/4D',
-                    desc: 'Experiencias de realidad virtual y 4D.',
+                    id: 'olympus-vr',        // antes celestial-vr
+                    name: 'OLYMPUS VR',
+                    desc: 'Experiencias de realidad virtual.',
                     type: 'subEmpresa',
                     departamentos: [
-                        { id: 'celestial-vr-realidad', name: 'Departamento de Realidad Virtual', desc: 'Desarrollo de entornos VR.', type: 'departamento' },
-                        { id: 'celestial-vr-efectos', name: 'Departamento de Efectos 4D', desc: 'Integración de efectos físicos.', type: 'departamento' },
-                        { id: 'celestial-vr-experiencia', name: 'Departamento de Experiencia Inmersiva', desc: 'Diseño de interacción y usabilidad.', type: 'departamento' }
+                        { id: 'olympus-vr-realidad', name: 'Departamento de Realidad Virtual', desc: 'Desarrollo de entornos VR.', type: 'departamento' },
+                        { id: 'olympus-vr-efectos', name: 'Departamento de Efectos Inmersivos', desc: 'Integración de efectos físicos.', type: 'departamento' },
+                        { id: 'olympus-vr-experiencia', name: 'Departamento de Experiencia Inmersiva', desc: 'Diseño de interacción y usabilidad.', type: 'departamento' }
                     ]
                 }
             ]
@@ -323,15 +182,72 @@ OLYMPUS_STRUCTURE.companias.push({
     ]
 });
 
-// ----- 5. VISION OLYMPUS (Cultura, formación y expansión) -----
+// ----- 3. OLYMPUS SOCIETY (antiguo OLYMPUS LABS + VISION OLYMPUS) -----
 OLYMPUS_STRUCTURE.companias.push({
-    id: 'vision-olympus',
-    name: 'VISION OLYMPUS',
-    description: 'Cultura, formación y expansión estratégica.',
+    id: 'olympus-society',
+    name: 'OLYMPUS SOCIETY',
+    description: 'Desarrollo de aplicaciones digitales, cultura, formación y expansión.',
     type: 'compania',
-    color: CONFIG.colors.compania5,
-    mision: 'Democratizar el conocimiento y expandir las fronteras de la ciencia.',
+    color: CONFIG.colors.compania2,
+    mision: 'Empoderar a las personas con herramientas digitales y conocimiento.',
     empresas: [
+        // Empresa original de Labs
+        {
+            id: 'olympus-mindset',
+            name: 'OLYMPUS MINDSET',
+            desc: 'Unidad que gestiona apps de desarrollo personal y rendimiento.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'mindset-legal', name: 'Departamento Legal', desc: 'Protección de datos, cumplimiento normativo digital, términos y condiciones.', type: 'departamento' }
+            ],
+            subEmpresas: [
+                {
+                    id: 'empyria',
+                    name: 'EMPYRIA',
+                    desc: 'Gestión del tiempo y rutinas.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'empyria-prog', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento técnico.', type: 'departamento' },
+                        { id: 'empyria-producto', name: 'Departamento de Producto & Creativo', desc: 'UX/UI, diseño funcional y experiencia.', type: 'departamento' },
+                        { id: 'empyria-ops', name: 'Departamento de Operaciones', desc: 'Actualizaciones, métricas y soporte.', type: 'departamento' }
+                    ]
+                },
+                {
+                    id: 'noema',
+                    name: 'NOEMA',
+                    desc: 'Entrenamiento mental y cognitivo.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'noema-prog', name: 'Departamento de Programación', desc: 'Desarrollo técnico y algoritmos.', type: 'departamento' },
+                        { id: 'noema-producto', name: 'Departamento de Producto & Creativo', desc: 'Diseño de ejercicios y experiencia.', type: 'departamento' },
+                        { id: 'noema-ops', name: 'Departamento de Operaciones', desc: 'Optimización basada en datos.', type: 'departamento' }
+                    ]
+                },
+                {
+                    id: 'vitalion',
+                    name: 'VITALION',
+                    desc: 'Entrenamiento físico y nutrición.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'vitalion-prog', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento.', type: 'departamento' },
+                        { id: 'vitalion-producto', name: 'Departamento de Producto & Creativo', desc: 'Diseño de rutinas y experiencia.', type: 'departamento' },
+                        { id: 'vitalion-ops', name: 'Departamento de Operaciones', desc: 'Soporte y métricas.', type: 'departamento' }
+                    ]
+                },
+                {
+                    id: 'ecomyse',
+                    name: 'ECOMYSE',
+                    desc: 'Finanzas personales.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'ecomyse-prog', name: 'Departamento de Programación', desc: 'Desarrollo de funcionalidades.', type: 'departamento' },
+                        { id: 'ecomyse-producto', name: 'Departamento de Producto & Creativo', desc: 'UX/UI financiero.', type: 'departamento' },
+                        { id: 'ecomyse-ops', name: 'Departamento de Operaciones', desc: 'Gestión de datos.', type: 'departamento' }
+                    ]
+                }
+            ]
+        },
+        // Empresas provenientes de Vision Olympus
         {
             id: 'olympus-academy',
             name: 'OLYMPUS ACADEMY',
@@ -368,29 +284,38 @@ OLYMPUS_STRUCTURE.companias.push({
     ]
 });
 
-// ==================== ASIGNACIÓN DE EMPLEADOS (UNA SOLA VEZ) ====================
-// Conjunto con los IDs de los departamentos de Avalon Studios y Avalon Creators (20-40 empleados)
-const AVALON_SPECIAL_DEPARTMENTS = new Set([
-    // Avalon Creators
-    'avalon-creators-edicion',
-    'avalon-creators-legal',
-    'avalon-creators-atencion',
-    // Avalon Series
-    'series-edicion',
-    'series-creativo',
-    'series-produccion',
-    // Avalon Movies
-    'movies-edicion',
-    'movies-creativo',
-    'movies-produccion',
-    // Avalon Animation
-    'animation-2d',
-    'animation-3d',
-    'animation-art'
-]);
+// ----- 4. OLYMPUS REGALIS (nueva compañía) -----
+OLYMPUS_STRUCTURE.companias.push({
+    id: 'olympus-regalis',
+    name: 'OLYMPUS REGALIS',
+    description: 'Moda y e‑commerce de lujo.',
+    type: 'compania',
+    color: CONFIG.colors.compania1,
+    mision: 'Vestir el futuro con estilo y sostenibilidad.',
+    empresas: [
+        {
+            id: 'olympus-atelier',
+            name: 'OLYMPUS ATELIER',
+            desc: 'Marca de ropa y e‑commerce de moda.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'olympus-atelier-diseno', name: 'Departamento de Diseño', desc: 'Creación de colecciones y tendencias.', type: 'departamento' },
+                { id: 'olympus-atelier-produccion', name: 'Departamento de Producción Textil', desc: 'Fabricación y control de calidad.', type: 'departamento' },
+                { id: 'olympus-atelier-marketing', name: 'Departamento de Marketing', desc: 'Estrategia digital y branding.', type: 'departamento' },
+                { id: 'olympus-atelier-atencion', name: 'Departamento de Atención al Cliente', desc: 'Soporte postventa y experiencia.', type: 'departamento' },
+                { id: 'olympus-atelier-logistica', name: 'Departamento de Logística', desc: 'Gestión de inventarios y envíos.', type: 'departamento' }
+            ]
+        }
+    ]
+});
 
-// Conjunto con los IDs de los departamentos de Olympus Strategy y Olympus Culture (3-8 empleados)
+// ==================== ASIGNACIÓN DE EMPLEADOS ====================
+// Conjunto con los IDs de departamentos que tendrán entre 3 y 8 empleados
 const SMALL_DEPARTMENTS = new Set([
+    // Olympus Academy
+    'academy-tecnica',
+    'academy-liderazgo',
+    'academy-interno',
     // Olympus Culture
     'culture-valores',
     'culture-experiencia',
@@ -398,22 +323,21 @@ const SMALL_DEPARTMENTS = new Set([
     // Olympus Strategy
     'strategy-global',
     'strategy-innovacion',
-    'strategy-alianzas'
+    'strategy-alianzas',
+    // Olympus Atelier
+    'olympus-atelier-diseno',
+    'olympus-atelier-produccion',
+    'olympus-atelier-marketing',
+    'olympus-atelier-atencion',
+    'olympus-atelier-logistica'
 ]);
 
 function assignEmployeeCounts(node) {
     if (node.type === 'departamento') {
-        // Casos especiales con valores fijos
-        if (node.id === 'avalon-creators-atencion') {
-            node.employees = 4;
-        } else if (node.id === 'avalon-creators-legal') {
-            node.employees = 2;
-        } else if (AVALON_SPECIAL_DEPARTMENTS.has(node.id)) {
-            node.employees = Math.floor(Math.random() * 21) + 20; // 20..40
-        } else if (SMALL_DEPARTMENTS.has(node.id)) {
-            node.employees = Math.floor(Math.random() * 6) + 3;   // 3..8
+        if (SMALL_DEPARTMENTS.has(node.id)) {
+            node.employees = Math.floor(Math.random() * 6) + 3; // 3..8
         } else {
-            node.employees = 0;   // Todos los demás departamentos tienen 0 empleados
+            node.employees = 0;
         }
         node.totalEmployees = node.employees;
         return node.totalEmployees;
@@ -434,11 +358,11 @@ function assignEmployeeCounts(node) {
     return sum;
 }
 
-// Enlazar compañías al núcleo y asignar empleados de forma permanente
+// Enlazar compañías al núcleo y asignar empleados
 OLYMPUS_STRUCTURE.nucleo.companias = OLYMPUS_STRUCTURE.companias;
 assignEmployeeCounts(OLYMPUS_STRUCTURE.nucleo);
 
-// ==================== FUNCIONES AUXILIARES ====================
+// ==================== FUNCIONES AUXILIARES (sin cambios) ====================
 function formatDisplayName(rawName, type) {
     if (type === 'nucleo') return 'OLYMPUS';
     if (type === 'departamento' && rawName.length > 25) {
@@ -711,8 +635,6 @@ function createGalaxy() {
     OLYMPUS_STRUCTURE.companias.forEach(c => assignGroupAndStripe(c, c.id));
     assignGroupAndStripe(OLYMPUS_STRUCTURE.nucleo, 'nucleo');
 
-    // NOTA: Los empleados ya fueron asignados permanentemente al inicio, no se recalcula aquí
-
     function calcSizes(node) {
         node.size = calculateOptimalSize(node);
         if (node.empresas) node.empresas.forEach(calcSizes);
@@ -876,7 +798,6 @@ function fitZoomToContent() {
     svg.transition().duration(600).call(zoomBehavior.transform, transform);
 }
 
-// Nueva función: obtiene todos los nodos descendientes (incluido él mismo) a partir de la estructura
 function getDescendantNodes(node) {
     let nodes = [node];
     if (node.empresas) {
@@ -895,9 +816,7 @@ function getDescendantNodes(node) {
 }
 
 function fitToNodeGroup(node) {
-    // Recolectar todos los nodos del grupo (él y sus descendientes)
     const groupNodes = getDescendantNodes(node);
-    // Filtrar los que están en DATA.nodes (todos deberían estarlo) y además visibles según filtros
     const visibleGroupNodes = groupNodes.filter(n => 
         n.type === 'nucleo' || DATA.groupVisibility[n.groupId] === true
     );
@@ -911,7 +830,7 @@ function fitToNodeGroup(node) {
         minY = Math.min(minY, n.y - hh);
         maxY = Math.max(maxY, n.y + hh);
     });
-    const padding = 80; // padding adicional alrededor del grupo
+    const padding = 80;
     const width = maxX - minX + padding*2;
     const height = maxY - minY + padding*2;
     const scale = Math.min(CONFIG.width / width, CONFIG.height / height) * 0.9;
@@ -986,14 +905,12 @@ function handleNodeMouseOut(node) {
 function handleNodeClick(node) {
     document.getElementById('nodeTooltip').style.display = 'none';
     selectNode(node);
-    // Si el nodo tiene hijos (empresas, subempresas o departamentos), mostramos el panorama completo.
     if ((node.empresas && node.empresas.length) || 
         (node.subEmpresas && node.subEmpresas.length) || 
         (node.departamentos && node.departamentos.length) ||
         (node.companias && node.companias.length)) {
         fitToNodeGroup(node);
     } else {
-        // Para nodos hoja (departamentos), centramos con zoom
         centerOnNode(node, 2);
     }
 }
@@ -1051,7 +968,6 @@ function navigateToGroup(groupId) {
                 if(chk) chk.checked = true;
                 render();
             }
-            // En lugar de centerOnNode, mostramos panorama si tiene hijos
             if ((node.empresas && node.empresas.length) || 
                 (node.subEmpresas && node.subEmpresas.length) || 
                 (node.departamentos && node.departamentos.length)) {
@@ -1085,7 +1001,6 @@ function performSearch() {
             let icon = { nucleo:'sun', compania:'globe-americas', empresa:'sitemap', subEmpresa:'briefcase', departamento:'users' }[n.type] || 'building';
             div.innerHTML = `<i class="fas fa-${icon}"></i> ${n.name}`;
             div.addEventListener('click', () => {
-                // Al hacer clic en resultado, aplicar misma lógica de panorama
                 if ((n.empresas && n.empresas.length) || 
                     (n.subEmpresas && n.subEmpresas.length) || 
                     (n.departamentos && n.departamentos.length)) {
@@ -1160,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStats();
             createImmersionButton();
             fitZoomToContent();
-            console.log('🚀 OLYMPUS – Estructura modificada: CELESTIAL GAMES con 3 sub‑empresas, empleados de Avalon (20-40, con excepciones) y pequeños departamentos (3-8) en Strategy/Culture.');
+            console.log('🚀 OLYMPUS – Estructura modificada: eliminado AVALON, añadido REGALIS, Interactive renombrado, Labs → Society, Vision integrada.');
         } catch(e) {
             console.error('❌ Error fatal:', e);
             document.getElementById('graphContainer').innerHTML = `<div style="color:#ff6b6b; padding:20px; text-align:center;"><h3>Error al cargar la galaxia</h3><p>${e.message}</p><button onclick="location.reload()" style="padding:10px 20px; background:#6a9eff; color:white; border:none; border-radius:4px; margin-top:10px; cursor:pointer;">Reintentar</button></div>`;
