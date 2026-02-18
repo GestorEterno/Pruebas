@@ -420,7 +420,15 @@ function calculateOptimalSize(node) {
     };
 }
 
-function rectanglesOverlap(a, b, margin = 0) { /* sin cambios */ return false; } // omitida por brevedad
+function rectanglesOverlap(a, b, margin = 0) {
+    const aHalfW = a.size.width/2, aHalfH = a.size.height/2;
+    const bHalfW = b.size.width/2, bHalfH = b.size.height/2;
+    const aL = a.x - aHalfW - margin, aR = a.x + aHalfW + margin;
+    const aT = a.y - aHalfH - margin, aB = a.y + aHalfH + margin;
+    const bL = b.x - bHalfW - margin, bR = b.x + bHalfW + margin;
+    const bT = b.y - bHalfH - margin, bB = b.y + bHalfH + margin;
+    return !(aR < bL || aL > bR || aB < bT || aT > bB);
+}
 
 function computeOrbitRadius(parent, children, baseRadius, siblingMargin) {
     if (children.length === 0) return 0;
@@ -716,7 +724,7 @@ function render() {
         visibleNodeIds.has(l.source.id || l.source) && visibleNodeIds.has(l.target.id || l.target)
     );
 
-    g.selectAll('.link')
+    const linkGroup = g.selectAll('.link')
         .data(visibleLinks)
         .enter()
         .append('line')
@@ -783,25 +791,290 @@ function render() {
     updateStats();
 }
 
-// ==================== ZOOM Y EVENTOS (sin cambios relevantes) ====================
-function fitZoomToContent() { /* ... */ }
-function getDescendantNodes(node) { /* ... */ }
-function fitToNodeGroup(node) { /* ... */ }
-function handleNodeMouseOver(node, event) { /* ... */ }
-function handleNodeMouseOut(node) { /* ... */ }
-function handleNodeClick(node) { /* ... */ }
-function selectNode(node) { /* ... */ }
-let searchDebounceTimer;
-function setupEvents() { /* ... */ }
-function navigateToGroup(groupId) { /* ... */ }
-function performSearch() { /* ... */ }
-function centerOnNucleo() { /* ... */ }
-function centerOnNode(node, scale = 2) { /* ... */ }
-function handleResize() { /* ... */ }
-function updateStats() { /* ... */ }
-function createImmersionButton() { /* ... */ }
+// ==================== ZOOM Y EVENTOS ====================
+function fitZoomToContent() {
+    const svg = d3.select('#galaxySvg');
+    const visibleNodes = DATA.nodes.filter(n => n.type === 'nucleo' || DATA.groupVisibility[n.groupId] === true);
+    if (!visibleNodes.length) return;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    visibleNodes.forEach(n => {
+        const hw = n.size.width/2, hh = n.size.height/2;
+        minX = Math.min(minX, n.x - hw);
+        maxX = Math.max(maxX, n.x + hw);
+        minY = Math.min(minY, n.y - hh);
+        maxY = Math.max(maxY, n.y + hh);
+    });
+    const padding = 150;
+    const width = maxX - minX + padding*2;
+    const height = maxY - minY + padding*2;
+    const scale = Math.min(CONFIG.width / width, CONFIG.height / height) * 0.8;
+    const cx = (minX + maxX)/2, cy = (minY + maxY)/2;
+    const transform = d3.zoomIdentity.translate(CONFIG.width/2, CONFIG.height/2).scale(scale).translate(-cx, -cy);
+    svg.transition().duration(600).call(zoomBehavior.transform, transform);
+}
 
-// (Las funciones omitidas se mantienen igual que en la versión anterior, por brevedad no se repiten aquí pero deben incluirse en el código final. En la entrega real se incluirían completas.)
+function getDescendantNodes(node) {
+    let nodes = [node];
+    if (node.empresas) {
+        node.empresas.forEach(e => nodes = nodes.concat(getDescendantNodes(e)));
+    }
+    if (node.subEmpresas) {
+        node.subEmpresas.forEach(s => nodes = nodes.concat(getDescendantNodes(s)));
+    }
+    if (node.departamentos) {
+        node.departamentos.forEach(d => nodes = nodes.concat(getDescendantNodes(d)));
+    }
+    if (node.companias) {
+        node.companias.forEach(c => nodes = nodes.concat(getDescendantNodes(c)));
+    }
+    return nodes;
+}
+
+function fitToNodeGroup(node) {
+    const groupNodes = getDescendantNodes(node);
+    const visibleGroupNodes = groupNodes.filter(n => 
+        n.type === 'nucleo' || DATA.groupVisibility[n.groupId] === true
+    );
+    if (visibleGroupNodes.length === 0) return;
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    visibleGroupNodes.forEach(n => {
+        const hw = n.size.width/2, hh = n.size.height/2;
+        minX = Math.min(minX, n.x - hw);
+        maxX = Math.max(maxX, n.x + hw);
+        minY = Math.min(minY, n.y - hh);
+        maxY = Math.max(maxY, n.y + hh);
+    });
+    const padding = 80;
+    const width = maxX - minX + padding*2;
+    const height = maxY - minY + padding*2;
+    const scale = Math.min(CONFIG.width / width, CONFIG.height / height) * 0.9;
+    const cx = (minX + maxX)/2, cy = (minY + maxY)/2;
+    const transform = d3.zoomIdentity.translate(CONFIG.width/2, CONFIG.height/2).scale(scale).translate(-cx, -cy);
+    d3.select('#galaxySvg').transition().duration(600).call(zoomBehavior.transform, transform);
+}
+
+function handleNodeMouseOver(node, event) {
+    d3.select(`#node-${node.id} .node-rect`).attr('stroke','#fff').attr('stroke-width',2.5);
+    d3.selectAll('.link').filter(d => d.source.id === node.id || d.target.id === node.id)
+        .attr('stroke', d => d.type === 'service' ? '#ffdd44' : '#fff')
+        .attr('stroke-width', 3)
+        .attr('opacity', 1);
+    
+    const tooltip = document.getElementById('nodeTooltip');
+    let tipo = '';
+    if (node.type === 'nucleo') tipo = '🏛️ Corporación';
+    else if (node.type === 'compania') tipo = '🏢 Compañía';
+    else if (node.type === 'empresa') tipo = '📌 Empresa';
+    else if (node.type === 'subEmpresa') tipo = '🔹 Sub‑empresa / Aplicación';
+    else if (node.type === 'departamento') tipo = '📋 Departamento';
+    
+    let descripcion = node.desc || node.description || 'Sin descripción';
+    let misionHtml = '';
+    if (node.mision) misionHtml = `<br><span style="color:#aaccff; font-weight:600;">⚡ Misión:</span> ${node.mision}`;
+    
+    let empleadosHtml = `<br><span style="color:#b0b8c9;">👥 Total empleados: ${node.totalEmployees?.toLocaleString() || 0}</span>`;
+    
+    let extraInfo = '';
+    if (node.type === 'compania') {
+        const numEmpresas = node.empresas?.length || 0;
+        extraInfo = `<br><span style="color:#b0b8c9;">📊 ${numEmpresas} empresas bajo su mando</span>`;
+    } else if (node.type === 'empresa') {
+        const numSub = node.subEmpresas?.length || 0;
+        const numDept = node.departamentos?.length || 0;
+        extraInfo = `<br><span style="color:#b0b8c9;">🔗 ${numSub} divisiones · 📋 ${numDept} departamentos directos</span>`;
+    } else if (node.type === 'subEmpresa') {
+        const numDept = node.departamentos?.length || 0;
+        extraInfo = `<br><span style="color:#b0b8c9;">🧩 ${numDept} departamentos especializados</span>`;
+    }
+    
+    let html = `<strong style="font-size:1.1em;">${node.name}</strong><br>${tipo}<br>`;
+    html += `<span style="color:#e6e9f0;">${descripcion}</span>`;
+    html += misionHtml;
+    html += empleadosHtml;
+    html += extraInfo;
+
+    if (node.departamentos && node.departamentos.length) {
+        html += '<br><span style="color:#aaccff; font-weight:600;">📂 Departamentos:</span><ul>';
+        node.departamentos.slice(0, 6).forEach(d => {
+            html += `<li>${d.name} (${d.employees} emp.)</li>`;
+        });
+        if (node.departamentos.length > 6) html += `<li>y ${node.departamentos.length-6} más...</li>`;
+        html += '</ul>';
+    }
+    
+    tooltip.innerHTML = html;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (event.clientX + 20) + 'px';
+    tooltip.style.top = (event.clientY - 40) + 'px';
+}
+
+function handleNodeMouseOut(node) {
+    d3.select(`#node-${node.id} .node-rect`).attr('stroke','#2a3a5c').attr('stroke-width',1.5);
+    d3.selectAll('.link').attr('stroke', d => d.type === 'service' ? '#ffaa44' : '#6a9eff')
+        .attr('stroke-width', d => d.type === 'service' ? 2.2 : 1.8)
+        .attr('opacity', 0.85);
+    document.getElementById('nodeTooltip').style.display = 'none';
+}
+
+function handleNodeClick(node) {
+    document.getElementById('nodeTooltip').style.display = 'none';
+    selectNode(node);
+    if ((node.empresas && node.empresas.length) || 
+        (node.subEmpresas && node.subEmpresas.length) || 
+        (node.departamentos && node.departamentos.length) ||
+        (node.companias && node.companias.length)) {
+        fitToNodeGroup(node);
+    } else {
+        centerOnNode(node, 2);
+    }
+}
+
+function selectNode(node) {
+    if (DATA.selectedNode) {
+        d3.select(`#node-${DATA.selectedNode.id} .node-rect`).attr('stroke','#2a3a5c').attr('stroke-width',1.5);
+    }
+    DATA.selectedNode = node;
+    d3.select(`#node-${node.id} .node-rect`).attr('stroke','#fff').attr('stroke-width',2.5);
+}
+
+let searchDebounceTimer;
+function setupEvents() {
+    console.log('⚙️ Configurando eventos...');
+    const toggleSidebar = () => {
+        document.querySelector('.sidebar').classList.toggle('collapsed');
+        setTimeout(handleResize, 300);
+    };
+    document.getElementById('sidebarCollapseBtn')?.addEventListener('click', toggleSidebar);
+    document.getElementById('sidebarToggleBtn')?.addEventListener('click', toggleSidebar);
+    
+    buildHierarchyMenu();
+    
+    setTimeout(bindGroupFilters, 50);
+
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            performSearch();
+        }, 150);
+    });
+    document.getElementById('searchBtn')?.addEventListener('click', performSearch);
+    
+    document.getElementById('centerBtn')?.addEventListener('click', centerOnNucleo);
+    document.getElementById('zoomInBtn')?.addEventListener('click', () => d3.select('#galaxySvg').transition().call(zoomBehavior.scaleBy, 1.3));
+    document.getElementById('zoomOutBtn')?.addEventListener('click', () => d3.select('#galaxySvg').transition().call(zoomBehavior.scaleBy, 0.7));
+    document.getElementById('resetViewBtn')?.addEventListener('click', fitZoomToContent);
+    window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(handleResize, 200); });
+}
+
+function navigateToGroup(groupId) {
+    if (groupId === 'all') {
+        OLYMPUS_STRUCTURE.companias.forEach(c => { DATA.groupVisibility[c.id] = true; let chk = document.getElementById(`chk_${c.id}`); if(chk) chk.checked = true; });
+        render(); fitZoomToContent();
+    } else if (groupId === 'nucleo') {
+        centerOnNucleo();
+    } else {
+        const node = DATA.nodes.find(n => n.id === groupId);
+        if (node) {
+            if (!DATA.groupVisibility[groupId]) {
+                DATA.groupVisibility[groupId] = true;
+                let chk = document.getElementById(`chk_${groupId}`);
+                if(chk) chk.checked = true;
+                render();
+            }
+            if ((node.empresas && node.empresas.length) || 
+                (node.subEmpresas && node.subEmpresas.length) || 
+                (node.departamentos && node.departamentos.length)) {
+                fitToNodeGroup(node);
+            } else {
+                centerOnNode(node, 2);
+            }
+            handleNodeClick(node);
+        }
+    }
+}
+
+function performSearch() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const resultsContainer = document.getElementById('searchResults');
+    if (!query) {
+        resultsContainer.classList.remove('active');
+        return;
+    }
+    const results = DATA.nodes.filter(n => 
+        (n.name?.toLowerCase().includes(query) || 
+         n.description?.toLowerCase().includes(query) || 
+         n.mision?.toLowerCase().includes(query) || 
+         n.desc?.toLowerCase().includes(query))
+    );
+    resultsContainer.innerHTML = '';
+    if (results.length) {
+        results.forEach(n => {
+            const div = document.createElement('div');
+            div.className = 'search-result-item';
+            let icon = { nucleo:'sun', compania:'globe-americas', empresa:'sitemap', subEmpresa:'briefcase', departamento:'users' }[n.type] || 'building';
+            div.innerHTML = `<i class="fas fa-${icon}"></i> ${n.name}`;
+            div.addEventListener('click', () => {
+                if ((n.empresas && n.empresas.length) || 
+                    (n.subEmpresas && n.subEmpresas.length) || 
+                    (n.departamentos && n.departamentos.length)) {
+                    fitToNodeGroup(n);
+                } else {
+                    centerOnNode(n, 2);
+                }
+                handleNodeClick(n);
+                resultsContainer.classList.remove('active');
+                document.getElementById('searchInput').value = '';
+            });
+            resultsContainer.appendChild(div);
+        });
+        resultsContainer.classList.add('active');
+    } else {
+        resultsContainer.innerHTML = '<div class="search-result-item">Sin resultados</div>';
+        resultsContainer.classList.add('active');
+    }
+}
+
+function centerOnNucleo() { const n = DATA.nodes.find(n => n.id === 'nucleo'); if(n) centerOnNode(n, 1.2); }
+function centerOnNode(node, scale = 2) {
+    const svg = d3.select('#galaxySvg');
+    const transform = d3.zoomIdentity.translate(CONFIG.width/2, CONFIG.height/2).scale(scale).translate(-node.x, -node.y);
+    svg.transition().duration(600).call(zoomBehavior.transform, transform);
+}
+
+function handleResize() {
+    updateDimensions();
+    d3.select('#galaxySvg').attr('width', CONFIG.width).attr('height', CONFIG.height);
+    createGalaxy();
+    render();
+    fitZoomToContent();
+}
+
+function updateStats() {
+    document.getElementById('nodeCount').textContent = DATA.nodes.length;
+    document.getElementById('linkCount').textContent = DATA.links.length;
+    document.getElementById('companyCount').textContent = DATA.nodes.filter(n => n.type === 'compania').length;
+    const totalEmpresas = DATA.nodes.filter(n => n.type === 'empresa' || n.type === 'subEmpresa').length;
+    document.getElementById('empresaTotalCount').textContent = totalEmpresas;
+    document.getElementById('departmentCount').textContent = DATA.nodes.filter(n => n.type === 'departamento').length;
+    const nucleo = DATA.nodes.find(n => n.id === 'nucleo');
+    document.getElementById('totalEmployees').textContent = nucleo?.totalEmployees?.toLocaleString() || '0';
+}
+
+function createImmersionButton() {
+    if (document.getElementById('immersionBtn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'immersion-btn'; btn.id = 'immersionBtn'; btn.title = 'Modo inmersión';
+    btn.innerHTML = '<i class="fas fa-expand"></i>';
+    document.body.appendChild(btn);
+    btn.addEventListener('click', function() {
+        immersionMode = !immersionMode;
+        document.body.classList.toggle('immersion-mode');
+        this.innerHTML = immersionMode ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+        setTimeout(handleResize, 300);
+    });
+}
 
 // ==================== ARRANQUE ====================
 document.addEventListener('DOMContentLoaded', () => {
