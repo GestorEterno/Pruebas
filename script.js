@@ -1,16 +1,13 @@
 // ============================================================
-// OLYMPUS · GALAXIA CORPORATIVA - ESTRUCTURA FINAL (CORREGIDA)
+// OLYMPUS · GALAXIA CORPORATIVA - ESTRUCTURA FINAL (CON APLICACIONES)
 // ============================================================
 // ✅ Cambios aplicados:
-//   - Intercambio de orden: MINDSET primero, TECHNOLOGY cuarto.
-//   - MINDSET: 
-//       * Compañía → MINDSET DIVISION (empresa)
-//       * De MINDSET DIVISION:
-//           → APLICACIONES (subempresa) que contiene las 4 apps (subempresas sin departamentos):
-//                TEMPO, NOEMA, VITALION, OLYMPUS
-//           → 3 departamentos: Programación (5 emp.), Legal (1 emp.), Testers (3 emp.)
-//   - Corrección en computeBoundingRadii y placeAllNodes para manejar múltiples niveles de subempresas.
-//   - Aumentado MAX_LENGTH a 15 para evitar particiones.
+//   - Nuevo tipo de nodo: "aplicacion", con tamaño y color propio.
+//   - "APLICACIONES" es una empresa normal que contiene las apps.
+//   - Las apps (TEMPO, NOEMA, VITALION, OLYMPUS) son de tipo "aplicacion".
+//   - Se han ajustado los tamaños base en CONFIG.sizes.
+//   - Se ha añadido el color para aplicacion en typeColors.
+//   - El algoritmo de posicionamiento maneja correctamente múltiples niveles.
 // ============================================================
 
 // ==================== CONFIGURACIÓN GLOBAL ====================
@@ -23,6 +20,7 @@ const CONFIG = {
         compania:    { widthBase: 240, heightBase: 100, padding: 20 },
         empresa:     { widthBase: 200, heightBase: 80,  padding: 18 },
         subEmpresa:  { widthBase: 160, heightBase: 60,  padding: 16 },
+        aplicacion:  { widthBase: 140, heightBase: 50,  padding: 14 }, // nuevo tipo
         departamento: { widthBase: 140, heightBase: 50, padding: 12 }
     },
 
@@ -39,6 +37,7 @@ const CONFIG = {
     typeColors: {
         empresa:     '#4d7cfe', // Azul
         subEmpresa:  '#06d6a0', // Verde
+        aplicacion:  '#f78b2e', // Naranja
         departamento:'#ef476f'  // Rojo
     },
 
@@ -97,37 +96,38 @@ OLYMPUS_STRUCTURE.companias.push({
                 { id: 'mindset-legal', name: 'Departamento Legal', desc: 'Protección de datos, cumplimiento normativo digital.', type: 'departamento' },
                 { id: 'mindset-testers', name: 'Departamento de Testers', desc: 'Pruebas de experiencia de usuario y control de calidad.', type: 'departamento' }
             ],
-            // Subempresa contenedora de las apps
+            // Empresa contenedora de las apps (tipo empresa, no subempresa)
             subEmpresas: [
                 {
                     id: 'aplicaciones-mindset',
                     name: 'APLICACIONES',
                     desc: 'Conjunto de aplicaciones de desarrollo personal.',
-                    type: 'subEmpresa',
-                    subEmpresas: [
+                    type: 'empresa',  // ahora es empresa
+                    // Las apps son de tipo "aplicacion"
+                    aplicaciones: [    // nuevo campo para apps
                         {
                             id: 'tempo',
                             name: 'TEMPO',
                             desc: 'Gestión del tiempo y rutinas.',
-                            type: 'subEmpresa'
+                            type: 'aplicacion'
                         },
                         {
                             id: 'noema',
                             name: 'NOEMA',
                             desc: 'Entrenamiento mental y cognitivo.',
-                            type: 'subEmpresa'
+                            type: 'aplicacion'
                         },
                         {
                             id: 'vitalion',
                             name: 'VITALION',
                             desc: 'Entrenamiento físico y nutrición.',
-                            type: 'subEmpresa'
+                            type: 'aplicacion'
                         },
                         {
                             id: 'olympus-app',
                             name: 'OLYMPUS',
                             desc: 'Plataforma integral de bienestar y productividad.',
-                            type: 'subEmpresa'
+                            type: 'aplicacion'
                         }
                     ]
                 }
@@ -351,6 +351,7 @@ function assignEmployeeCounts(node) {
     const children = [];
     if (node.departamentos) children.push(...node.departamentos);
     if (node.subEmpresas) children.push(...node.subEmpresas);
+    if (node.aplicaciones) children.push(...node.aplicaciones); // nuevo campo
     if (node.empresas) children.push(...node.empresas);
     if (node.companias) children.push(...node.companias);
     
@@ -403,8 +404,8 @@ function measureText(text, fontSize, weight = '600') {
 }
 
 function calculateOptimalSize(node) {
-    const base = CONFIG.sizes[node.type];
-    let fontSize = { nucleo:20, compania:16, empresa:14, subEmpresa:12, departamento:11 }[node.type];
+    const base = CONFIG.sizes[node.type] || CONFIG.sizes.subEmpresa; // fallback
+    let fontSize = { nucleo:20, compania:16, empresa:14, subEmpresa:12, aplicacion:12, departamento:11 }[node.type];
     if (!node.displayName) node.displayName = formatDisplayName(node.name, node.type);
     const lineHeight = fontSize * 1.2;
     const lines = node.displayName.split('\n');
@@ -456,9 +457,9 @@ function computeOrbitRadius(parent, children, baseRadius, siblingMargin) {
     return radius;
 }
 
-// ==================== CÁLCULO DE RADIOS (CORREGIDO PARA SUBEMPRESAS ANIDADAS) ====================
+// ==================== CÁLCULO DE RADIOS (SOPORTE PARA APLICACIONES) ====================
 function computeBoundingRadii(node, type) {
-    if (type === 'departamento') {
+    if (type === 'departamento' || type === 'aplicacion') {
         node.selfRadius = Math.hypot(node.size.width, node.size.height) / 2;
         node.boundingRadius = node.selfRadius;
         node.orbitRadius = 0;
@@ -469,9 +470,11 @@ function computeBoundingRadii(node, type) {
     if (type === 'subEmpresa') {
         if (node.subEmpresas) children.push(...node.subEmpresas);
         if (node.departamentos) children.push(...node.departamentos);
+        if (node.aplicaciones) children.push(...node.aplicaciones);
     } else if (type === 'empresa') {
         if (node.subEmpresas) children.push(...node.subEmpresas);
         if (node.departamentos) children.push(...node.departamentos);
+        if (node.aplicaciones) children.push(...node.aplicaciones);
     } else if (type === 'compania' && node.empresas) {
         children = node.empresas;
     } else if (type === 'nucleo' && node.companias) {
@@ -479,10 +482,13 @@ function computeBoundingRadii(node, type) {
     }
 
     children.forEach(child => {
-        if (type === 'subEmpresa') computeBoundingRadii(child, child.type);
-        else if (type === 'empresa') computeBoundingRadii(child, child.type);
-        else if (type === 'compania') computeBoundingRadii(child, 'empresa');
-        else if (type === 'nucleo') computeBoundingRadii(child, 'compania');
+        if (type === 'subEmpresa' || type === 'empresa') {
+            computeBoundingRadii(child, child.type);
+        } else if (type === 'compania') {
+            computeBoundingRadii(child, 'empresa');
+        } else if (type === 'nucleo') {
+            computeBoundingRadii(child, 'compania');
+        }
     });
 
     node.selfRadius = Math.hypot(node.size.width, node.size.height) / 2;
@@ -490,7 +496,7 @@ function computeBoundingRadii(node, type) {
     let baseRadius = 0;
     if (type === 'subEmpresa') baseRadius = CONFIG.orbit.distanceSubEmpresaToDepartamento;
     else if (type === 'empresa') {
-        if (node.subEmpresas && node.subEmpresas.length > 0) {
+        if ((node.subEmpresas && node.subEmpresas.length > 0) || (node.aplicaciones && node.aplicaciones.length > 0)) {
             baseRadius = CONFIG.orbit.distanceEmpresaToSubEmpresa;
         } else {
             baseRadius = CONFIG.orbit.distanceEmpresaToDepartamento;
@@ -524,7 +530,7 @@ function placeNodeChildren(parent, children) {
     }
 }
 
-// ==================== COLOCACIÓN DE TODOS LOS NODOS (CORREGIDA) ====================
+// ==================== COLOCACIÓN DE TODOS LOS NODOS ====================
 function placeAllNodes() {
     const nucleo = OLYMPUS_STRUCTURE.nucleo;
     nucleo.x = CONFIG.width / 2;
@@ -563,17 +569,18 @@ function placeAllNodes() {
         placeNodeChildren(compania, compania.empresas);
     });
 
-    // Colocar hijos de empresas (subempresas y departamentos)
+    // Colocar hijos de empresas (subempresas, departamentos, aplicaciones)
     companias.forEach(compania => {
         compania.empresas.forEach(empresa => {
             const hijos = [];
             if (empresa.subEmpresas) hijos.push(...empresa.subEmpresas);
             if (empresa.departamentos) hijos.push(...empresa.departamentos);
+            if (empresa.aplicaciones) hijos.push(...empresa.aplicaciones);
             placeNodeChildren(empresa, hijos);
         });
     });
 
-    // Colocar hijos de subempresas (subempresas y departamentos) - esto permite anidación
+    // Colocar hijos de subempresas (subempresas, departamentos, aplicaciones)
     companias.forEach(compania => {
         compania.empresas.forEach(empresa => {
             if (empresa.subEmpresas) {
@@ -581,6 +588,7 @@ function placeAllNodes() {
                     const hijosSub = [];
                     if (subEmpresa.subEmpresas) hijosSub.push(...subEmpresa.subEmpresas);
                     if (subEmpresa.departamentos) hijosSub.push(...subEmpresa.departamentos);
+                    if (subEmpresa.aplicaciones) hijosSub.push(...subEmpresa.aplicaciones);
                     placeNodeChildren(subEmpresa, hijosSub);
                 });
             }
@@ -634,7 +642,7 @@ function initSVG() {
 }
 
 function createGalaxy() {
-    console.log('🌌 Construyendo OLYMPUS (estructura final)...');
+    console.log('🌌 Construyendo OLYMPUS (estructura final con aplicaciones)...');
 
     function assignGroupAndStripe(node, groupId) {
         node.groupId = groupId;
@@ -645,6 +653,7 @@ function createGalaxy() {
         }
         if (node.empresas) node.empresas.forEach(e => assignGroupAndStripe(e, groupId));
         if (node.subEmpresas) node.subEmpresas.forEach(s => assignGroupAndStripe(s, groupId));
+        if (node.aplicaciones) node.aplicaciones.forEach(a => assignGroupAndStripe(a, groupId));
         if (node.departamentos) node.departamentos.forEach(d => assignGroupAndStripe(d, groupId));
     }
     OLYMPUS_STRUCTURE.companias.forEach(c => assignGroupAndStripe(c, c.id));
@@ -654,6 +663,7 @@ function createGalaxy() {
         node.size = calculateOptimalSize(node);
         if (node.empresas) node.empresas.forEach(calcSizes);
         if (node.subEmpresas) node.subEmpresas.forEach(calcSizes);
+        if (node.aplicaciones) node.aplicaciones.forEach(calcSizes);
         if (node.departamentos) node.departamentos.forEach(calcSizes);
     }
     calcSizes(OLYMPUS_STRUCTURE.nucleo);
@@ -724,7 +734,7 @@ function render() {
         visibleNodeIds.has(l.source.id || l.source) && visibleNodeIds.has(l.target.id || l.target)
     );
 
-    const linkGroup = g.selectAll('.link')
+    g.selectAll('.link')
         .data(visibleLinks)
         .enter()
         .append('line')
@@ -821,6 +831,9 @@ function getDescendantNodes(node) {
     if (node.subEmpresas) {
         node.subEmpresas.forEach(s => nodes = nodes.concat(getDescendantNodes(s)));
     }
+    if (node.aplicaciones) {
+        node.aplicaciones.forEach(a => nodes = nodes.concat(getDescendantNodes(a)));
+    }
     if (node.departamentos) {
         node.departamentos.forEach(d => nodes = nodes.concat(getDescendantNodes(d)));
     }
@@ -866,7 +879,8 @@ function handleNodeMouseOver(node, event) {
     if (node.type === 'nucleo') tipo = '🏛️ Corporación';
     else if (node.type === 'compania') tipo = '🏢 Compañía';
     else if (node.type === 'empresa') tipo = '📌 Empresa';
-    else if (node.type === 'subEmpresa') tipo = '🔹 Sub‑empresa / Aplicación';
+    else if (node.type === 'subEmpresa') tipo = '🔹 Sub‑empresa';
+    else if (node.type === 'aplicacion') tipo = '📱 Aplicación';
     else if (node.type === 'departamento') tipo = '📋 Departamento';
     
     let descripcion = node.desc || node.description || 'Sin descripción';
@@ -881,8 +895,9 @@ function handleNodeMouseOver(node, event) {
         extraInfo = `<br><span style="color:#b0b8c9;">📊 ${numEmpresas} empresas bajo su mando</span>`;
     } else if (node.type === 'empresa') {
         const numSub = node.subEmpresas?.length || 0;
+        const numApps = node.aplicaciones?.length || 0;
         const numDept = node.departamentos?.length || 0;
-        extraInfo = `<br><span style="color:#b0b8c9;">🔗 ${numSub} divisiones · 📋 ${numDept} departamentos directos</span>`;
+        extraInfo = `<br><span style="color:#b0b8c9;">🔗 ${numSub} divisiones · 📱 ${numApps} apps · 📋 ${numDept} departamentos directos</span>`;
     } else if (node.type === 'subEmpresa') {
         const numDept = node.departamentos?.length || 0;
         extraInfo = `<br><span style="color:#b0b8c9;">🧩 ${numDept} departamentos especializados</span>`;
@@ -922,6 +937,7 @@ function handleNodeClick(node) {
     selectNode(node);
     if ((node.empresas && node.empresas.length) || 
         (node.subEmpresas && node.subEmpresas.length) || 
+        (node.aplicaciones && node.aplicaciones.length) ||
         (node.departamentos && node.departamentos.length) ||
         (node.companias && node.companias.length)) {
         fitToNodeGroup(node);
@@ -985,6 +1001,7 @@ function navigateToGroup(groupId) {
             }
             if ((node.empresas && node.empresas.length) || 
                 (node.subEmpresas && node.subEmpresas.length) || 
+                (node.aplicaciones && node.aplicaciones.length) ||
                 (node.departamentos && node.departamentos.length)) {
                 fitToNodeGroup(node);
             } else {
@@ -1013,11 +1030,12 @@ function performSearch() {
         results.forEach(n => {
             const div = document.createElement('div');
             div.className = 'search-result-item';
-            let icon = { nucleo:'sun', compania:'globe-americas', empresa:'sitemap', subEmpresa:'briefcase', departamento:'users' }[n.type] || 'building';
+            let icon = { nucleo:'sun', compania:'globe-americas', empresa:'sitemap', subEmpresa:'briefcase', aplicacion:'mobile-alt', departamento:'users' }[n.type] || 'building';
             div.innerHTML = `<i class="fas fa-${icon}"></i> ${n.name}`;
             div.addEventListener('click', () => {
                 if ((n.empresas && n.empresas.length) || 
                     (n.subEmpresas && n.subEmpresas.length) || 
+                    (n.aplicaciones && n.aplicaciones.length) ||
                     (n.departamentos && n.departamentos.length)) {
                     fitToNodeGroup(n);
                 } else {
@@ -1090,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStats();
             createImmersionButton();
             fitZoomToContent();
-            console.log('🚀 OLYMPUS – Estructura final: MINDSET (TEMPO, NOEMA, VITALION, OLYMPUS), SOCIETY, INTERACTIVE, TECHNOLOGY, REGALIS.');
+            console.log('🚀 OLYMPUS – Estructura final: MINDSET (con APLICACIONES y apps TEMPO, NOEMA, VITALION, OLYMPUS), SOCIETY, INTERACTIVE, TECHNOLOGY, REGALIS.');
         } catch(e) {
             console.error('❌ Error fatal:', e);
             document.getElementById('graphContainer').innerHTML = `<div style="color:#ff6b6b; padding:20px; text-align:center;"><h3>Error al cargar la galaxia</h3><p>${e.message}</p><button onclick="location.reload()" style="padding:10px 20px; background:#6a9eff; color:white; border:none; border-radius:4px; margin-top:10px; cursor:pointer;">Reintentar</button></div>`;
