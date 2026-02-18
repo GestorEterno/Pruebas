@@ -6,11 +6,11 @@
 //    - Creada OLYMPUS REGALIS con Olympus Atelier (e‑commerce de moda)
 //    - Olympus Interactive: renombrado Celestial Games → Olympus Games,
 //      sub‑empresas a Olympus 2D, 3D, VR (cada una con 3 departamentos)
-//    - Olympus Labs renombrado a OLYMPUS SOCIETY
-//    - Vision Olympus eliminada como compañía y sus empresas (Academy,
-//      Culture, Strategy) pasan a ser empresas de OLYMPUS SOCIETY
-//    - Empleados: solo los departamentos de las antiguas Vision y los
-//      nuevos de Olympus Atelier tienen 3‑8 empleados; el resto 0.
+//    - Olympus Labs renombrado a OLYMPUS SOCIETY (contiene Academy, Culture, Strategy)
+//    - OLYMPUS MINDSET separada como compañía independiente (con Empyria, Noema, Vitalion, Ecomyse)
+//    - Vision Olympus eliminada como compañía, sus empresas integradas en SOCIETY
+//    - Empleados: solo los departamentos de Academy, Culture, Strategy y los de
+//      Olympus Atelier tienen 3‑8 empleados; el resto 0.
 // ============================================================
 
 // ==================== CONFIGURACIÓN GLOBAL ====================
@@ -32,6 +32,7 @@ const CONFIG = {
         compania2: '#06d6a0',   // OLYMPUS SOCIETY
         compania3: '#ef476f',   // OLYMPUS TECHNOLOGY
         compania4: '#ff9e00',   // OLYMPUS INTERACTIVE
+        compania5: '#b583df'    // OLYMPUS MINDSET (nuevo)
     },
 
     // Colores distintos para cada nivel (ya no heredan de la compañía)
@@ -182,19 +183,63 @@ OLYMPUS_STRUCTURE.companias.push({
     ]
 });
 
-// ----- 3. OLYMPUS SOCIETY (antiguo OLYMPUS LABS + VISION OLYMPUS) -----
+// ----- 3. OLYMPUS SOCIETY (Academy, Culture, Strategy) -----
 OLYMPUS_STRUCTURE.companias.push({
     id: 'olympus-society',
     name: 'OLYMPUS SOCIETY',
-    description: 'Desarrollo de aplicaciones digitales, cultura, formación y expansión.',
+    description: 'Cultura, formación y expansión estratégica.',
     type: 'compania',
     color: CONFIG.colors.compania2,
-    mision: 'Empoderar a las personas con herramientas digitales y conocimiento.',
+    mision: 'Democratizar el conocimiento y expandir las fronteras de la ciencia.',
     empresas: [
-        // Empresa original de Labs
         {
-            id: 'olympus-mindset',
-            name: 'OLYMPUS MINDSET',
+            id: 'olympus-academy',
+            name: 'OLYMPUS ACADEMY',
+            desc: 'Formación técnica, liderazgo y desarrollo interno.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'academy-tecnica', name: 'Departamento de Formación Técnica', desc: 'Cursos y certificaciones.', type: 'departamento' },
+                { id: 'academy-liderazgo', name: 'Departamento de Liderazgo & Filosofía', desc: 'Desarrollo de líderes.', type: 'departamento' },
+                { id: 'academy-interno', name: 'Departamento de Desarrollo Interno', desc: 'Capacitación corporativa.', type: 'departamento' }
+            ]
+        },
+        {
+            id: 'olympus-culture',
+            name: 'OLYMPUS CULTURE & IDENTITY',
+            desc: 'Identidad corporativa y sentido de pertenencia.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'culture-valores', name: 'Departamento de Cultura & Valores', desc: 'Definición y comunicación.', type: 'departamento' },
+                { id: 'culture-experiencia', name: 'Departamento de Experiencia del Miembro', desc: 'Bienestar y clima laboral.', type: 'departamento' },
+                { id: 'culture-rangos', name: 'Departamento de Sistema de Rangos & Reconocimiento', desc: 'Carrera y méritos.', type: 'departamento' }
+            ]
+        },
+        {
+            id: 'olympus-strategy',
+            name: 'OLYMPUS STRATEGY & EXPANSION',
+            desc: 'Estrategia global y nuevas iniciativas.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'strategy-global', name: 'Departamento de Estrategia Global', desc: 'Visión a largo plazo.', type: 'departamento' },
+                { id: 'strategy-innovacion', name: 'Departamento de Innovación & Nuevas Iniciativas', desc: 'Nuevos negocios.', type: 'departamento' },
+                { id: 'strategy-alianzas', name: 'Departamento de Expansión & Alianzas', desc: 'Relaciones institucionales.', type: 'departamento' }
+            ]
+        }
+    ]
+});
+
+// ----- 4. OLYMPUS MINDSET (nueva compañía, antes dentro de SOCIETY) -----
+OLYMPUS_STRUCTURE.companias.push({
+    id: 'olympus-mindset',
+    name: 'OLYMPUS MINDSET',
+    description: 'Aplicaciones digitales de desarrollo personal y rendimiento.',
+    type: 'compania',
+    color: CONFIG.colors.compania5,
+    mision: 'Empoderar a las personas con herramientas digitales transformadoras.',
+    empresas: [
+        {
+            id: 'mindset-division',  // nombre interno para agrupar las apps
+            name: 'MINDSET DIVISION',
             desc: 'Unidad que gestiona apps de desarrollo personal y rendimiento.',
             type: 'empresa',
             departamentos: [
@@ -246,45 +291,11 @@ OLYMPUS_STRUCTURE.companias.push({
                     ]
                 }
             ]
-        },
-        // Empresas provenientes de Vision Olympus
-        {
-            id: 'olympus-academy',
-            name: 'OLYMPUS ACADEMY',
-            desc: 'Formación técnica, liderazgo y desarrollo interno.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'academy-tecnica', name: 'Departamento de Formación Técnica', desc: 'Cursos y certificaciones.', type: 'departamento' },
-                { id: 'academy-liderazgo', name: 'Departamento de Liderazgo & Filosofía', desc: 'Desarrollo de líderes.', type: 'departamento' },
-                { id: 'academy-interno', name: 'Departamento de Desarrollo Interno', desc: 'Capacitación corporativa.', type: 'departamento' }
-            ]
-        },
-        {
-            id: 'olympus-culture',
-            name: 'OLYMPUS CULTURE & IDENTITY',
-            desc: 'Identidad corporativa y sentido de pertenencia.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'culture-valores', name: 'Departamento de Cultura & Valores', desc: 'Definición y comunicación.', type: 'departamento' },
-                { id: 'culture-experiencia', name: 'Departamento de Experiencia del Miembro', desc: 'Bienestar y clima laboral.', type: 'departamento' },
-                { id: 'culture-rangos', name: 'Departamento de Sistema de Rangos & Reconocimiento', desc: 'Carrera y méritos.', type: 'departamento' }
-            ]
-        },
-        {
-            id: 'olympus-strategy',
-            name: 'OLYMPUS STRATEGY & EXPANSION',
-            desc: 'Estrategia global y nuevas iniciativas.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'strategy-global', name: 'Departamento de Estrategia Global', desc: 'Visión a largo plazo.', type: 'departamento' },
-                { id: 'strategy-innovacion', name: 'Departamento de Innovación & Nuevas Iniciativas', desc: 'Nuevos negocios.', type: 'departamento' },
-                { id: 'strategy-alianzas', name: 'Departamento de Expansión & Alianzas', desc: 'Relaciones institucionales.', type: 'departamento' }
-            ]
         }
     ]
 });
 
-// ----- 4. OLYMPUS REGALIS (nueva compañía) -----
+// ----- 5. OLYMPUS REGALIS (nueva compañía) -----
 OLYMPUS_STRUCTURE.companias.push({
     id: 'olympus-regalis',
     name: 'OLYMPUS REGALIS',
@@ -578,7 +589,7 @@ function agregarEnlacesServicio() {
     const serviceLinks = [
         { 
             source: 'helios-ai', 
-            target: 'olympus-mindset', 
+            target: 'mindset-division', // ahora dentro de MINDSET como empresa
             desc: 'Modelos de IA para personalización, recomendación y optimización en las aplicaciones de Olympus Mindset (Empyria, Noema, Vitalion, Ecomyse).' 
         }
     ];
@@ -1075,7 +1086,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStats();
             createImmersionButton();
             fitZoomToContent();
-            console.log('🚀 OLYMPUS – Estructura modificada: eliminado AVALON, añadido REGALIS, Interactive renombrado, Labs → Society, Vision integrada.');
+            console.log('🚀 OLYMPUS – Estructura final: TECHNOLOGY, INTERACTIVE, SOCIETY, MINDSET, REGALIS.');
         } catch(e) {
             console.error('❌ Error fatal:', e);
             document.getElementById('graphContainer').innerHTML = `<div style="color:#ff6b6b; padding:20px; text-align:center;"><h3>Error al cargar la galaxia</h3><p>${e.message}</p><button onclick="location.reload()" style="padding:10px 20px; background:#6a9eff; color:white; border:none; border-radius:4px; margin-top:10px; cursor:pointer;">Reintentar</button></div>`;
