@@ -1,16 +1,16 @@
 // ============================================================
-// OLYMPUS · GALAXIA CORPORATIVA - ESTRUCTURA MODIFICADA
+// OLYMPUS · GALAXIA CORPORATIVA - ESTRUCTURA FINAL
 // ============================================================
-// ✅ Cambios realizados:
-//    - Eliminada compañía AVALON
-//    - Creada OLYMPUS REGALIS con Olympus Atelier (e‑commerce de moda)
-//    - Olympus Interactive: renombrado Celestial Games → Olympus Games,
-//      sub‑empresas a Olympus 2D, 3D, VR (cada una con 3 departamentos)
-//    - Olympus Labs renombrado a OLYMPUS SOCIETY (contiene Academy, Culture, Strategy)
-//    - OLYMPUS MINDSET separada como compañía independiente (con Empyria, Noema, Vitalion, Ecomyse)
-//    - Vision Olympus eliminada como compañía, sus empresas integradas en SOCIETY
-//    - Empleados: solo los departamentos de Academy, Culture, Strategy y los de
-//      Olympus Atelier tienen 3‑8 empleados; el resto 0.
+// ✅ Cambios aplicados:
+//   - Intercambio de orden: MINDSET pasa a ser la primera compañía,
+//     TECHNOLOGY la cuarta.
+//   - MINDSET reestructurada:
+//       * Compañía → MINDSET DIVISION (empresa)
+//       * De MINDSET DIVISION:
+//           → APLICACIONES (empresa) que contiene las 4 apps (subempresas sin departamentos)
+//           → 3 departamentos: Programación (5 emp.), Legal (1 emp.), Testers (3 emp.)
+//   - Aumentado MAX_LENGTH en formatDisplayName a 15 para evitar particiones.
+//   - Ajustada asignación de empleados para los nuevos departamentos.
 // ============================================================
 
 // ==================== CONFIGURACIÓN GLOBAL ====================
@@ -28,14 +28,14 @@ const CONFIG = {
 
     colors: {
         nucleo: '#ffd166',
-        compania1: '#4d7cfe',   // OLYMPUS REGALIS
+        compania1: '#b583df',   // OLYMPUS MINDSET (ahora primero)
         compania2: '#06d6a0',   // OLYMPUS SOCIETY
-        compania3: '#ef476f',   // OLYMPUS TECHNOLOGY
-        compania4: '#ff9e00',   // OLYMPUS INTERACTIVE
-        compania5: '#b583df'    // OLYMPUS MINDSET (nuevo)
+        compania3: '#ff9e00',   // OLYMPUS INTERACTIVE
+        compania4: '#ef476f',   // OLYMPUS TECHNOLOGY
+        compania5: '#4d7cfe'    // OLYMPUS REGALIS
     },
 
-    // Colores distintos para cada nivel (ya no heredan de la compañía)
+    // Colores distintos para cada nivel
     typeColors: {
         empresa:     '#4d7cfe', // Azul
         subEmpresa:  '#06d6a0', // Verde
@@ -45,7 +45,7 @@ const CONFIG = {
     orbit: {
         distanceSubEmpresaToDepartamento: 260,
         distanceEmpresaToSubEmpresa:      280,
-        distanceEmpresaToDepartamento:    200,   // para departamentos directos
+        distanceEmpresaToDepartamento:    200,
         distanceCompaniaToEmpresa:        540,
         distanceNucleoToCompania:         430,
         initialRadiusNucleoToCompania:    600,
@@ -72,18 +72,176 @@ const OLYMPUS_STRUCTURE = {
         type: 'nucleo',
         color: CONFIG.colors.nucleo,
         mision: 'Unificar el progreso humano a través de tecnología, creatividad y conocimiento.',
-        companias: []   // Se llenará con las compañías
+        companias: []
     },
     companias: []
 };
 
-// ----- 1. OLYMPUS TECHNOLOGY (Innovación tecnológica avanzada) -----
+// ----- 1. OLYMPUS MINDSET (nueva estructura) -----
+OLYMPUS_STRUCTURE.companias.push({
+    id: 'olympus-mindset',
+    name: 'OLYMPUS MINDSET',
+    description: 'Aplicaciones digitales de desarrollo personal y rendimiento.',
+    type: 'compania',
+    color: CONFIG.colors.compania1,
+    mision: 'Empoderar a las personas con herramientas digitales transformadoras.',
+    empresas: [
+        {
+            id: 'mindset-division',
+            name: 'MINDSET DIVISION',
+            desc: 'Unidad que gestiona apps de desarrollo personal y los equipos de soporte.',
+            type: 'empresa',
+            // Departamentos directos
+            departamentos: [
+                { id: 'mindset-programacion', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento de las aplicaciones.', type: 'departamento' },
+                { id: 'mindset-legal', name: 'Departamento Legal', desc: 'Protección de datos, cumplimiento normativo digital.', type: 'departamento' },
+                { id: 'mindset-testers', name: 'Departamento de Testers', desc: 'Pruebas de experiencia de usuario y control de calidad.', type: 'departamento' }
+            ],
+            // Empresa contenedora de las apps
+            subEmpresas: [
+                {
+                    id: 'aplicaciones-mindset',
+                    name: 'APLICACIONES',
+                    desc: 'Conjunto de aplicaciones de desarrollo personal.',
+                    type: 'subEmpresa',  // Podría ser 'empresa' también, pero para mantener coherencia usamos subEmpresa
+                    subEmpresas: [       // Las apps como subempresas sin departamentos
+                        {
+                            id: 'empyria',
+                            name: 'EMPYRIA',
+                            desc: 'Gestión del tiempo y rutinas.',
+                            type: 'subEmpresa'
+                            // sin departamentos
+                        },
+                        {
+                            id: 'noema',
+                            name: 'NOEMA',
+                            desc: 'Entrenamiento mental y cognitivo.',
+                            type: 'subEmpresa'
+                        },
+                        {
+                            id: 'vitalion',
+                            name: 'VITALION',
+                            desc: 'Entrenamiento físico y nutrición.',
+                            type: 'subEmpresa'
+                        },
+                        {
+                            id: 'ecomyse',
+                            name: 'ECOMYSE',
+                            desc: 'Finanzas personales.',
+                            type: 'subEmpresa'
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+});
+
+// ----- 2. OLYMPUS SOCIETY (Academy, Culture, Strategy) -----
+OLYMPUS_STRUCTURE.companias.push({
+    id: 'olympus-society',
+    name: 'OLYMPUS SOCIETY',
+    description: 'Cultura, formación y expansión estratégica.',
+    type: 'compania',
+    color: CONFIG.colors.compania2,
+    mision: 'Democratizar el conocimiento y expandir las fronteras de la ciencia.',
+    empresas: [
+        {
+            id: 'olympus-academy',
+            name: 'OLYMPUS ACADEMY',
+            desc: 'Formación técnica, liderazgo y desarrollo interno.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'academy-tecnica', name: 'Departamento de Formación Técnica', desc: 'Cursos y certificaciones.', type: 'departamento' },
+                { id: 'academy-liderazgo', name: 'Departamento de Liderazgo & Filosofía', desc: 'Desarrollo de líderes.', type: 'departamento' },
+                { id: 'academy-interno', name: 'Departamento de Desarrollo Interno', desc: 'Capacitación corporativa.', type: 'departamento' }
+            ]
+        },
+        {
+            id: 'olympus-culture',
+            name: 'OLYMPUS CULTURE & IDENTITY',
+            desc: 'Identidad corporativa y sentido de pertenencia.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'culture-valores', name: 'Departamento de Cultura & Valores', desc: 'Definición y comunicación.', type: 'departamento' },
+                { id: 'culture-experiencia', name: 'Departamento de Experiencia del Miembro', desc: 'Bienestar y clima laboral.', type: 'departamento' },
+                { id: 'culture-rangos', name: 'Departamento de Sistema de Rangos & Reconocimiento', desc: 'Carrera y méritos.', type: 'departamento' }
+            ]
+        },
+        {
+            id: 'olympus-strategy',
+            name: 'OLYMPUS STRATEGY & EXPANSION',
+            desc: 'Estrategia global y nuevas iniciativas.',
+            type: 'empresa',
+            departamentos: [
+                { id: 'strategy-global', name: 'Departamento de Estrategia Global', desc: 'Visión a largo plazo.', type: 'departamento' },
+                { id: 'strategy-innovacion', name: 'Departamento de Innovación & Nuevas Iniciativas', desc: 'Nuevos negocios.', type: 'departamento' },
+                { id: 'strategy-alianzas', name: 'Departamento de Expansión & Alianzas', desc: 'Relaciones institucionales.', type: 'departamento' }
+            ]
+        }
+    ]
+});
+
+// ----- 3. OLYMPUS INTERACTIVE (Videojuegos y experiencias digitales) -----
+OLYMPUS_STRUCTURE.companias.push({
+    id: 'olympus-interactive',
+    name: 'OLYMPUS INTERACTIVE',
+    description: 'Videojuegos y experiencias digitales.',
+    type: 'compania',
+    color: CONFIG.colors.compania3,
+    mision: 'Construir los mundos digitales del mañana.',
+    empresas: [
+        {
+            id: 'olympus-games',
+            name: 'OLYMPUS GAMES',
+            desc: 'Desarrollo y publicación de videojuegos.',
+            type: 'empresa',
+            subEmpresas: [
+                {
+                    id: 'olympus-3d',
+                    name: 'OLYMPUS 3D',
+                    desc: 'Desarrollo de juegos en 3D.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'olympus-3d-modelado', name: 'Departamento de Modelado 3D', desc: 'Creación de modelos y entornos 3D.', type: 'departamento' },
+                        { id: 'olympus-3d-animacion', name: 'Departamento de Animación 3D', desc: 'Animación de personajes y objetos.', type: 'departamento' },
+                        { id: 'olympus-3d-programacion', name: 'Departamento de Programación 3D', desc: 'Desarrollo de mecánicas y gráficos.', type: 'departamento' }
+                    ]
+                },
+                {
+                    id: 'olympus-2d',
+                    name: 'OLYMPUS 2D',
+                    desc: 'Desarrollo de juegos en 2D.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'olympus-2d-arte', name: 'Departamento de Arte 2D', desc: 'Ilustración y diseño de sprites.', type: 'departamento' },
+                        { id: 'olympus-2d-animacion', name: 'Departamento de Animación 2D', desc: 'Animación de personajes y escenarios.', type: 'departamento' },
+                        { id: 'olympus-2d-programacion', name: 'Departamento de Programación 2D', desc: 'Desarrollo de lógica y motores 2D.', type: 'departamento' }
+                    ]
+                },
+                {
+                    id: 'olympus-vr',
+                    name: 'OLYMPUS VR',
+                    desc: 'Experiencias de realidad virtual.',
+                    type: 'subEmpresa',
+                    departamentos: [
+                        { id: 'olympus-vr-realidad', name: 'Departamento de Realidad Virtual', desc: 'Desarrollo de entornos VR.', type: 'departamento' },
+                        { id: 'olympus-vr-efectos', name: 'Departamento de Efectos Inmersivos', desc: 'Integración de efectos físicos.', type: 'departamento' },
+                        { id: 'olympus-vr-experiencia', name: 'Departamento de Experiencia Inmersiva', desc: 'Diseño de interacción y usabilidad.', type: 'departamento' }
+                    ]
+                }
+            ]
+        }
+    ]
+});
+
+// ----- 4. OLYMPUS TECHNOLOGY (Innovación tecnológica avanzada) -----
 OLYMPUS_STRUCTURE.companias.push({
     id: 'olympus-technology',
     name: 'OLYMPUS TECHNOLOGY',
     description: 'Innovación tecnológica avanzada.',
     type: 'compania',
-    color: CONFIG.colors.compania3,
+    color: CONFIG.colors.compania4,
     mision: 'Forjar el futuro desde las estrellas hasta el átomo.',
     empresas: [
         {
@@ -130,178 +288,13 @@ OLYMPUS_STRUCTURE.companias.push({
     ]
 });
 
-// ----- 2. OLYMPUS INTERACTIVE (Videojuegos y experiencias digitales) -----
-OLYMPUS_STRUCTURE.companias.push({
-    id: 'olympus-interactive',
-    name: 'OLYMPUS INTERACTIVE',
-    description: 'Videojuegos y experiencias digitales.',
-    type: 'compania',
-    color: CONFIG.colors.compania4,
-    mision: 'Construir los mundos digitales del mañana.',
-    empresas: [
-        {
-            id: 'olympus-games',            // antes celestial-games
-            name: 'OLYMPUS GAMES',
-            desc: 'Desarrollo y publicación de videojuegos.',
-            type: 'empresa',
-            subEmpresas: [
-                {
-                    id: 'olympus-3d',        // antes celestial-3d
-                    name: 'OLYMPUS 3D',
-                    desc: 'Desarrollo de juegos en 3D.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'olympus-3d-modelado', name: 'Departamento de Modelado 3D', desc: 'Creación de modelos y entornos 3D.', type: 'departamento' },
-                        { id: 'olympus-3d-animacion', name: 'Departamento de Animación 3D', desc: 'Animación de personajes y objetos.', type: 'departamento' },
-                        { id: 'olympus-3d-programacion', name: 'Departamento de Programación 3D', desc: 'Desarrollo de mecánicas y gráficos.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'olympus-2d',        // antes celestial-2d
-                    name: 'OLYMPUS 2D',
-                    desc: 'Desarrollo de juegos en 2D.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'olympus-2d-arte', name: 'Departamento de Arte 2D', desc: 'Ilustración y diseño de sprites.', type: 'departamento' },
-                        { id: 'olympus-2d-animacion', name: 'Departamento de Animación 2D', desc: 'Animación de personajes y escenarios.', type: 'departamento' },
-                        { id: 'olympus-2d-programacion', name: 'Departamento de Programación 2D', desc: 'Desarrollo de lógica y motores 2D.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'olympus-vr',        // antes celestial-vr
-                    name: 'OLYMPUS VR',
-                    desc: 'Experiencias de realidad virtual.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'olympus-vr-realidad', name: 'Departamento de Realidad Virtual', desc: 'Desarrollo de entornos VR.', type: 'departamento' },
-                        { id: 'olympus-vr-efectos', name: 'Departamento de Efectos Inmersivos', desc: 'Integración de efectos físicos.', type: 'departamento' },
-                        { id: 'olympus-vr-experiencia', name: 'Departamento de Experiencia Inmersiva', desc: 'Diseño de interacción y usabilidad.', type: 'departamento' }
-                    ]
-                }
-            ]
-        }
-    ]
-});
-
-// ----- 3. OLYMPUS SOCIETY (Academy, Culture, Strategy) -----
-OLYMPUS_STRUCTURE.companias.push({
-    id: 'olympus-society',
-    name: 'OLYMPUS SOCIETY',
-    description: 'Cultura, formación y expansión estratégica.',
-    type: 'compania',
-    color: CONFIG.colors.compania2,
-    mision: 'Democratizar el conocimiento y expandir las fronteras de la ciencia.',
-    empresas: [
-        {
-            id: 'olympus-academy',
-            name: 'OLYMPUS ACADEMY',
-            desc: 'Formación técnica, liderazgo y desarrollo interno.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'academy-tecnica', name: 'Departamento de Formación Técnica', desc: 'Cursos y certificaciones.', type: 'departamento' },
-                { id: 'academy-liderazgo', name: 'Departamento de Liderazgo & Filosofía', desc: 'Desarrollo de líderes.', type: 'departamento' },
-                { id: 'academy-interno', name: 'Departamento de Desarrollo Interno', desc: 'Capacitación corporativa.', type: 'departamento' }
-            ]
-        },
-        {
-            id: 'olympus-culture',
-            name: 'OLYMPUS CULTURE & IDENTITY',
-            desc: 'Identidad corporativa y sentido de pertenencia.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'culture-valores', name: 'Departamento de Cultura & Valores', desc: 'Definición y comunicación.', type: 'departamento' },
-                { id: 'culture-experiencia', name: 'Departamento de Experiencia del Miembro', desc: 'Bienestar y clima laboral.', type: 'departamento' },
-                { id: 'culture-rangos', name: 'Departamento de Sistema de Rangos & Reconocimiento', desc: 'Carrera y méritos.', type: 'departamento' }
-            ]
-        },
-        {
-            id: 'olympus-strategy',
-            name: 'OLYMPUS STRATEGY & EXPANSION',
-            desc: 'Estrategia global y nuevas iniciativas.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'strategy-global', name: 'Departamento de Estrategia Global', desc: 'Visión a largo plazo.', type: 'departamento' },
-                { id: 'strategy-innovacion', name: 'Departamento de Innovación & Nuevas Iniciativas', desc: 'Nuevos negocios.', type: 'departamento' },
-                { id: 'strategy-alianzas', name: 'Departamento de Expansión & Alianzas', desc: 'Relaciones institucionales.', type: 'departamento' }
-            ]
-        }
-    ]
-});
-
-// ----- 4. OLYMPUS MINDSET (nueva compañía, antes dentro de SOCIETY) -----
-OLYMPUS_STRUCTURE.companias.push({
-    id: 'olympus-mindset',
-    name: 'OLYMPUS MINDSET',
-    description: 'Aplicaciones digitales de desarrollo personal y rendimiento.',
-    type: 'compania',
-    color: CONFIG.colors.compania5,
-    mision: 'Empoderar a las personas con herramientas digitales transformadoras.',
-    empresas: [
-        {
-            id: 'mindset-division',  // nombre interno para agrupar las apps
-            name: 'MINDSET DIVISION',
-            desc: 'Unidad que gestiona apps de desarrollo personal y rendimiento.',
-            type: 'empresa',
-            departamentos: [
-                { id: 'mindset-legal', name: 'Departamento Legal', desc: 'Protección de datos, cumplimiento normativo digital, términos y condiciones.', type: 'departamento' }
-            ],
-            subEmpresas: [
-                {
-                    id: 'empyria',
-                    name: 'EMPYRIA',
-                    desc: 'Gestión del tiempo y rutinas.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'empyria-prog', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento técnico.', type: 'departamento' },
-                        { id: 'empyria-producto', name: 'Departamento de Producto & Creativo', desc: 'UX/UI, diseño funcional y experiencia.', type: 'departamento' },
-                        { id: 'empyria-ops', name: 'Departamento de Operaciones', desc: 'Actualizaciones, métricas y soporte.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'noema',
-                    name: 'NOEMA',
-                    desc: 'Entrenamiento mental y cognitivo.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'noema-prog', name: 'Departamento de Programación', desc: 'Desarrollo técnico y algoritmos.', type: 'departamento' },
-                        { id: 'noema-producto', name: 'Departamento de Producto & Creativo', desc: 'Diseño de ejercicios y experiencia.', type: 'departamento' },
-                        { id: 'noema-ops', name: 'Departamento de Operaciones', desc: 'Optimización basada en datos.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'vitalion',
-                    name: 'VITALION',
-                    desc: 'Entrenamiento físico y nutrición.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'vitalion-prog', name: 'Departamento de Programación', desc: 'Desarrollo y mantenimiento.', type: 'departamento' },
-                        { id: 'vitalion-producto', name: 'Departamento de Producto & Creativo', desc: 'Diseño de rutinas y experiencia.', type: 'departamento' },
-                        { id: 'vitalion-ops', name: 'Departamento de Operaciones', desc: 'Soporte y métricas.', type: 'departamento' }
-                    ]
-                },
-                {
-                    id: 'ecomyse',
-                    name: 'ECOMYSE',
-                    desc: 'Finanzas personales.',
-                    type: 'subEmpresa',
-                    departamentos: [
-                        { id: 'ecomyse-prog', name: 'Departamento de Programación', desc: 'Desarrollo de funcionalidades.', type: 'departamento' },
-                        { id: 'ecomyse-producto', name: 'Departamento de Producto & Creativo', desc: 'UX/UI financiero.', type: 'departamento' },
-                        { id: 'ecomyse-ops', name: 'Departamento de Operaciones', desc: 'Gestión de datos.', type: 'departamento' }
-                    ]
-                }
-            ]
-        }
-    ]
-});
-
 // ----- 5. OLYMPUS REGALIS (nueva compañía) -----
 OLYMPUS_STRUCTURE.companias.push({
     id: 'olympus-regalis',
     name: 'OLYMPUS REGALIS',
     description: 'Moda y e‑commerce de lujo.',
     type: 'compania',
-    color: CONFIG.colors.compania1,
+    color: CONFIG.colors.compania5,
     mision: 'Vestir el futuro con estilo y sostenibilidad.',
     empresas: [
         {
@@ -345,7 +338,14 @@ const SMALL_DEPARTMENTS = new Set([
 
 function assignEmployeeCounts(node) {
     if (node.type === 'departamento') {
-        if (SMALL_DEPARTMENTS.has(node.id)) {
+        // Casos especiales de MINDSET
+        if (node.id === 'mindset-legal') {
+            node.employees = 1;
+        } else if (node.id === 'mindset-programacion') {
+            node.employees = 5;
+        } else if (node.id === 'mindset-testers') {
+            node.employees = 3;
+        } else if (SMALL_DEPARTMENTS.has(node.id)) {
             node.employees = Math.floor(Math.random() * 6) + 3; // 3..8
         } else {
             node.employees = 0;
@@ -373,7 +373,7 @@ function assignEmployeeCounts(node) {
 OLYMPUS_STRUCTURE.nucleo.companias = OLYMPUS_STRUCTURE.companias;
 assignEmployeeCounts(OLYMPUS_STRUCTURE.nucleo);
 
-// ==================== FUNCIONES AUXILIARES (sin cambios) ====================
+// ==================== FUNCIONES AUXILIARES ====================
 function formatDisplayName(rawName, type) {
     if (type === 'nucleo') return 'OLYMPUS';
     if (type === 'departamento' && rawName.length > 25) {
@@ -383,7 +383,8 @@ function formatDisplayName(rawName, type) {
         return rawName.substring(0, splitPos) + '\n' + rawName.substring(splitPos + 1);
     }
     const words = rawName.split(' ');
-    const MAX_LENGTH = 10, processed = [];
+    const MAX_LENGTH = 15; // Aumentado para evitar cortes como "INTERA-"
+    const processed = [];
     words.forEach(word => {
         if (word.length > MAX_LENGTH) {
             const mid = Math.ceil(word.length / 2);
@@ -589,7 +590,7 @@ function agregarEnlacesServicio() {
     const serviceLinks = [
         { 
             source: 'helios-ai', 
-            target: 'mindset-division', // ahora dentro de MINDSET como empresa
+            target: 'mindset-division', 
             desc: 'Modelos de IA para personalización, recomendación y optimización en las aplicaciones de Olympus Mindset (Empyria, Noema, Vitalion, Ecomyse).' 
         }
     ];
@@ -630,7 +631,7 @@ function initSVG() {
 }
 
 function createGalaxy() {
-    console.log('🌌 Construyendo OLYMPUS (estructura modificada)...');
+    console.log('🌌 Construyendo OLYMPUS (estructura final)...');
 
     function assignGroupAndStripe(node, groupId) {
         node.groupId = groupId;
@@ -1086,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStats();
             createImmersionButton();
             fitZoomToContent();
-            console.log('🚀 OLYMPUS – Estructura final: TECHNOLOGY, INTERACTIVE, SOCIETY, MINDSET, REGALIS.');
+            console.log('🚀 OLYMPUS – Estructura final: MINDSET, SOCIETY, INTERACTIVE, TECHNOLOGY, REGALIS.');
         } catch(e) {
             console.error('❌ Error fatal:', e);
             document.getElementById('graphContainer').innerHTML = `<div style="color:#ff6b6b; padding:20px; text-align:center;"><h3>Error al cargar la galaxia</h3><p>${e.message}</p><button onclick="location.reload()" style="padding:10px 20px; background:#6a9eff; color:white; border:none; border-radius:4px; margin-top:10px; cursor:pointer;">Reintentar</button></div>`;
