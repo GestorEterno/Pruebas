@@ -7,7 +7,8 @@
 //   - MINDSET reestructurada:
 //       * Compañía → MINDSET DIVISION (empresa)
 //       * De MINDSET DIVISION:
-//           → APLICACIONES (empresa) que contiene las 4 apps (subempresas sin departamentos)
+//           → APLICACIONES (empresa) que contiene las 4 apps (subempresas sin departamentos):
+//                TEMPO, NOEMA, VITALION, OLYMPUS
 //           → 3 departamentos: Programación (5 emp.), Legal (1 emp.), Testers (3 emp.)
 //   - Aumentado MAX_LENGTH en formatDisplayName a 15 para evitar particiones.
 //   - Ajustada asignación de empleados para los nuevos departamentos.
@@ -28,7 +29,7 @@ const CONFIG = {
 
     colors: {
         nucleo: '#ffd166',
-        compania1: '#b583df',   // OLYMPUS MINDSET (ahora primero)
+        compania1: '#b583df',   // OLYMPUS MINDSET
         compania2: '#06d6a0',   // OLYMPUS SOCIETY
         compania3: '#ff9e00',   // OLYMPUS INTERACTIVE
         compania4: '#ef476f',   // OLYMPUS TECHNOLOGY
@@ -103,14 +104,13 @@ OLYMPUS_STRUCTURE.companias.push({
                     id: 'aplicaciones-mindset',
                     name: 'APLICACIONES',
                     desc: 'Conjunto de aplicaciones de desarrollo personal.',
-                    type: 'subEmpresa',  // Podría ser 'empresa' también, pero para mantener coherencia usamos subEmpresa
-                    subEmpresas: [       // Las apps como subempresas sin departamentos
+                    type: 'subEmpresa',
+                    subEmpresas: [
                         {
-                            id: 'empyria',
-                            name: 'EMPYRIA',
+                            id: 'tempo',
+                            name: 'TEMPO',
                             desc: 'Gestión del tiempo y rutinas.',
                             type: 'subEmpresa'
-                            // sin departamentos
                         },
                         {
                             id: 'noema',
@@ -125,9 +125,9 @@ OLYMPUS_STRUCTURE.companias.push({
                             type: 'subEmpresa'
                         },
                         {
-                            id: 'ecomyse',
-                            name: 'ECOMYSE',
-                            desc: 'Finanzas personales.',
+                            id: 'olympus-app',   // para evitar conflicto con el holding
+                            name: 'OLYMPUS',
+                            desc: 'Plataforma integral de bienestar y productividad.',
                             type: 'subEmpresa'
                         }
                     ]
@@ -591,7 +591,7 @@ function agregarEnlacesServicio() {
         { 
             source: 'helios-ai', 
             target: 'mindset-division', 
-            desc: 'Modelos de IA para personalización, recomendación y optimización en las aplicaciones de Olympus Mindset (Empyria, Noema, Vitalion, Ecomyse).' 
+            desc: 'Modelos de IA para personalización, recomendación y optimización en las aplicaciones de Olympus Mindset (TEMPO, NOEMA, VITALION, OLYMPUS).' 
         }
     ];
 
@@ -1087,7 +1087,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStats();
             createImmersionButton();
             fitZoomToContent();
-            console.log('🚀 OLYMPUS – Estructura final: MINDSET, SOCIETY, INTERACTIVE, TECHNOLOGY, REGALIS.');
+            console.log('🚀 OLYMPUS – Estructura final: MINDSET (TEMPO, NOEMA, VITALION, OLYMPUS), SOCIETY, INTERACTIVE, TECHNOLOGY, REGALIS.');
         } catch(e) {
             console.error('❌ Error fatal:', e);
             document.getElementById('graphContainer').innerHTML = `<div style="color:#ff6b6b; padding:20px; text-align:center;"><h3>Error al cargar la galaxia</h3><p>${e.message}</p><button onclick="location.reload()" style="padding:10px 20px; background:#6a9eff; color:white; border:none; border-radius:4px; margin-top:10px; cursor:pointer;">Reintentar</button></div>`;
